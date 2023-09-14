@@ -1,6 +1,10 @@
 {
     "files.associations": {
-        "stm8s.h": "c"
+        "stm8s.h": "c",
+        "stm8s_itc.h": "c",
+        "stm8s_it.h": "c",
+        "stm8s_spi.h": "c",
+        "msp49xx.h": "c"
     },
     "taskExplorer.exclude": [
         "**/.vscode-test/**",
@@ -27,5 +31,6 @@
         "**/vendor/**",
         "**/work/**",
         "/home/patrick/dev/stm8-project-template/Makefile"
-    ]
+    ],
+    "C_Cpp.default.compilerPath": "/usr/bin/gcc"
 }

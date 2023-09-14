@@ -65,7 +65,7 @@ MKDIR      := mkdir
 CP         := cp
 
 # Build flags
-BUILD_TARGET_DEVICE   := # STM8S103                # Specify the target device here! (See stm8s.h for available devices)
+BUILD_TARGET_DEVICE   := STM8S103                # Specify the target device here! (See stm8s.h for available devices)
 DEFINES               := -D$(BUILD_TARGET_DEVICE)  # -DEXAMPLE_DEFINE -DANOTHER_DEFINE
 
 # Object files directory and extension
@@ -88,10 +88,9 @@ FW_ASMS    := $(patsubst $(FW_SRC)/%.c,$(FW_ASM)/%.asm,$(FW_SRCS))
 SPL_INCLUDE     := $(addprefix -I, lib/STM8S_StdPeriph_Driver/inc)
 SPL_SRC         := ./lib/STM8S_StdPeriph_Driver/src
 SPL_SRCS        := $(SPL_SRC)/stm8s_clk.c \
-                   $(SPL_SRC)/stm8s_exti.c \
-                   $(SPL_SRC)/stm8s_flash.c \
                    $(SPL_SRC)/stm8s_gpio.c \
-                   $(SPL_SRC)/stm8s_uart1.c
+                   $(SPL_SRC)/stm8s_uart1.c \
+		   $(SPL_SRC)/stm8s_spi.c
 SPL_OBJ         := $(OBJ)/lib/STM8S_StdPeriph_Driver
 SPL_OBJS        := $(patsubst $(SPL_SRC)/%.c,$(SPL_OBJ)/%.$(OBJ_EXT),$(SPL_SRCS))
 SPL_MM          := $(OBJ)/lib/STM8S_StdPeriph_Driver
@@ -99,23 +98,23 @@ SPL_MMS         := $(patsubst $(SPL_SRC)/%.c,$(SPL_MM)/%.d,$(SPL_SRCS))
 SPL_ASM         := $(OBJ)/lib/STM8S_StdPeriph_Driver
 SPL_ASMS        := $(patsubst $(SPL_SRC)/%.c,$(SPL_ASM)/%.asm,$(SPL_SRCS))
 
-# Library related definitions
-# Include and adjust to your needs if you intend to compile a library
-# EXAMPLELIB_INCLUDE := $(addprefix -I, lib/EXAMPLELIB/include) # Specify the include directory of the library
-# EXAMPLELIB_SRC     := ./lib/EXAMPLELIB/src                  # Specify the source directory of the library
-# These shouldn't require any changes
-# EXAMPLELIB_SRCS    := $(wildcard $(EXAMPLELIB_SRC)/*.c)
-# EXAMPLELIB_OBJ     := $(OBJ)/lib/EXAMPLELIB
-# EXAMPLELIB_OBJS    := $(patsubst $(EXAMPLELIB_SRC)/%.c,$(EXAMPLELIB_OBJ)/%.$(OBJ_EXT),$(EXAMPLELIB_SRCS))
-# EXAMPLELIB_MM      := $(OBJ)/lib/EXAMPLELIB
-# EXAMPLELIB_MMS     := $(patsubst $(EXAMPLELIB_SRC)/%.c,$(EXAMPLELIB_MM)/%.d,$(EXAMPLELIB_SRCS))
-# EXAMPLELIB_ASM     := $(OBJ)/lib/EXAMPLELIB
-# EXAMPLELIB_ASMS    := $(patsubst $(EXAMPLELIB_SRC)/%.c,$(EXAMPLELIB_ASM)/%.asm,$(EXAMPLELIB_SRCS))
+MIDIRX_INCLUDE	:= $(addprefix -I, lib/midirx/include)
+MIDIRX_SRC	:= ./lib/midirx/src
+MIDIRX_SRCS	:= $(wildcard $(MIDIRX_SRC)/*.c)
+MIDIRX_OBJ	:= $(OBJ)/lib/midirx
+MIDIRX_OBJS	:= $(patsubst $(MIDIRX_SRC)/%.c,$(MIDIRX_OBJ)/%.$(OBJ_EXT),$(MIDIRX_SRCS))
+MIDIRX_MM	:= $(OBJ)/lib/midirx
+MIDIRX_MMS	:= $(patsubst $(MIDIRX_SRC)/%.c,$(MIDIRX_MM)/%.d,$(MIDIRX_SRCS))
+MIDIRX_ASMS	:= $(patsubst $(MIDIRX_SRC)/%.c,$(MIDIRX_MM)/%.asm,$(MIDIRX_SRCS))
+
+SRCS 			:= $(FW_SRCS) $(SPL_SRCS) $(MIDIRX_SRCS)
+OBJS 			:= $(FW_OBJS) $(SPL_OBJS) $(MIDIRX_OBJS)
+ASMS 			:= $(FW_ASMS) $(SPL_ASMS) $(MIDIRX_ASMS)
 
 # All sources, objects and assembler files
-SRCS            := $(FW_SRCS) $(SPL_SRCS) # $(EXAMPLELIB_SRCS)
-OBJS            := $(FW_OBJS) $(SPL_OBJS) # $(EXAMPLELIB_OBJS)
-ASMS            := $(FW_ASMS) $(SPL_ASMS) # $(EXAMPLELIB_ASMS)
+SRCS            := $(FW_SRCS) $(SPL_SRCS) $(MIDIRX_SRCS) # $(EXAMPLELIB_SRCS)
+OBJS            := $(FW_OBJS) $(SPL_OBJS) $(MIDIRX_OBJS) # $(EXAMPLELIB_OBJS)
+ASMS            := $(FW_ASMS) $(SPL_ASMS) $(MIDIRX_ASMS) # $(EXAMPLELIB_ASMS)
 
 # Linker related definitions
 FW_BIN          := firmware
@@ -141,9 +140,11 @@ AS_FLAGS = -plosg -ff
 # DCE_EXCLUDE_ASM variable, where the exact path to the generated assembly file
 # must be specified.
 
-DCE_EXCLUDE_SYMBOLS := #-x _example_symbol1 \
-                       #-x _example_symbol2 \
-                       #-x _example_symbol3
+DCE_EXCLUDE_SYMBOLS :=	-x _cfg \
+			-x _GPIO_WriteHigh \
+			-x _SPI_Cmd \
+			-x _CLK_PeripheralClockConfig \
+			-x _CLK_DeInit \
 
 DCE_EXCLUDE_ASM := $(FW_ASM)/stm8s_it.asm
 
@@ -151,7 +152,7 @@ DCE_FLAGS       := -r $(DCE_EXCLUDE_SYMBOLS)
 DCE_ASMS        :=  $(filter-out $(DCE_EXCLUDE_ASM), $(ASMS))
 
 # Compiler flags
-INCLUDE         := $(STM8S_CFG_INCLUDE) $(FW_INCLUDE) $(SPL_INCLUDE) # $(EXAMPLELIB_INCLUDE)
+INCLUDE         := $(STM8S_CFG_INCLUDE) $(FW_INCLUDE) $(SPL_INCLUDE) $(MIDIRX_INCLUDE) # $(EXAMPLELIB_INCLUDE)
 CC_FLAGS        := -mstm8 --out-fmt-elf -c --opt-code-size $(INCLUDE)
 
 # Flashing
@@ -159,10 +160,10 @@ CC_FLAGS        := -mstm8 --out-fmt-elf -c --opt-code-size $(INCLUDE)
 # Please modify the parameters below to match your needs!
 # The default values provided assume an STM8S103F3 target device and the stlinkv2 as a programmer
 
-RAM_SIZE                := # 1024        # Specify the RAM size of the target device here!
-FLASH_SIZE              := # 8096        # Specify the flash size of the target device here!
-UPLOAD_TARGET_DEVICE    := # stm8s103f3  # Specify the target device for flashing here! See stm8flash -l for a list of supported devices
-UPLOAD_PROGRAMMER       := # stlinkv2    # Specify the programmer (stlink, stlinkv2, stlinkv21, stlinkv3, or espstlink) to use for flashing here!
+RAM_SIZE                := 1024        # Specify the RAM size of the target device here!
+FLASH_SIZE              := 8096        # Specify the flash size of the target device here!
+UPLOAD_TARGET_DEVICE    := stm8s103f3  # Specify the target device for flashing here! See stm8flash -l for a list of supported devices
+UPLOAD_PROGRAMMER       := stlinkv2    # Specify the programmer (stlink, stlinkv2, stlinkv21, stlinkv3, or espstlink) to use for flashing here!
 UPLOAD_FLAGS            := -c $(UPLOAD_PROGRAMMER) -p $(UPLOAD_TARGET_DEVICE) -w
 
 # ------------------------------------
@@ -270,20 +271,20 @@ $(SPL_MM)%.d: $(SPL_SRC)%.c toolchain_check
 	$(CC) $< $(DEFINES) $(CC_FLAGS) -MM > $@
 
 # Library objects
-# examplelib_obj: $(EXAMPLELIB_MMS) $(EXAMPLELIB_OBJS)
-#     @echo $^
+midirx_obj: $(MIDIRX_MMS) $(MIDIRX_OBJS)
+	@echo $^
 
-# $(EXAMPLELIB_OBJ)%.$(OBJ_EXT): $(EXAMPLELIB_OBJ)%.asm toolchain_check
-#     @$(MKDIR) -p $(EXAMPLELIB_OBJ)
-#     $(AS) $(AS_FLAGS) $<
+$(MIDIRX_OBJ)%.$(OBJ_EXT): $(MIDIRX_OBJ)%.asm toolchain_check
+	@$(MKDIR) -p $(MIDIRX_OBJ)
+	$(AS) $(AS_FLAGS) $<
 
-# $(EXAMPLELIB_OBJ)%.asm: $(EXAMPLELIB_SRC)%.c toolchain_check
-#     @$(MKDIR) -p $(EXAMPLELIB_OBJ)
-#     $(CC) $< $(DEFINES) $(CC_FLAGS) -S -o $@
+$(MIDIRX_OBJ)%.asm: $(MIDIRX_SRC)%.c toolchain_check
+	@$(MKDIR) -p $(MIDIRX_OBJ)
+	$(CC) $< $(DEFINE) $(CC_FLAGS) -S -o $@
 
-# $(EXAMPLELIB_MM)%.d: $(EXAMPLELIB_SRC)%.c toolchain_check
-#     @$(MKDIR) -p $(EXAMPLELIB_OBJ)
-#     $(CC) $< $(DEFINES) $(CC_FLAGS) -MM > $@
+$(MIDIRX_MM)%.d: $(MIDIRX_SRC)%.c toolchain_check
+	@$(MKDIR) -p $(MIDIRX_OBJ)
+	$(CC) $< $(DEFINE) $(CC_FLAGS) -MM > $@
 
 # Firmware objects
 fw_obj: $(FW_MMS) $(FW_OBJS) toolchain_check
