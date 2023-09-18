@@ -37,5 +37,9 @@
         "**/work/**",
         "/home/patrick/dev/stm8-project-template/Makefile"
     ],
-    "C_Cpp.default.compilerPath": "/usr/bin/gcc"
+    "C_Cpp.default.compilerPath": "/usr/bin/gcc",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none"
 }

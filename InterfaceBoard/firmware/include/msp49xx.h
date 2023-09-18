@@ -3,8 +3,7 @@
 
 #include <stdint.h>
 
-typedef enum
-{
+typedef enum {
 	WRITE = 0,  // 49x1's
 	IGNORE = 1, // 49x1's
 	DAC_A = 0,  // 49x2's
@@ -13,26 +12,22 @@ typedef enum
 
 typedef DAC DAC_APPLY; // 49x1's only have one DAC, so the bit is interpreted as apply or ignore
 
-typedef enum
-{
+typedef enum {
 	DAC_GAIN_1X = 1,
 	DAC_GAIN_2X = 0
 } DAC_GAIN;
 
-typedef enum
-{
+typedef enum {
 	DAC_SHUTDOWN = 0,
 	DAC_ACTIVE = 1
 } DAC_SHDN;
 
-typedef enum
-{
+typedef enum {
 	DAC_BUF_OFF = 0,
 	DAC_BUF_ON = 1
 } DAC_BUF;
 
-typedef struct
-{
+typedef struct {
 	DAC dac;
 	DAC_GAIN gain;
 	DAC_SHDN shutdown;
