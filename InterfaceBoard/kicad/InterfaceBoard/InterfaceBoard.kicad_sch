@@ -3552,7 +3552,7 @@
     (pin "2" (uuid b9e7b1fa-eab8-4a03-9670-3f8df389ea16))
     (pin "3" (uuid 8c0bab34-c2f9-4ab5-b294-1580607958c2))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "SW2") (unit 1)
         )
@@ -3579,7 +3579,7 @@
     (pin "2" (uuid f166a65b-21c9-42dd-b507-f478e826fab1))
     (pin "3" (uuid 63dac501-e8db-4be1-9292-50bfae556ed8))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "RV1") (unit 1)
         )
@@ -3605,7 +3605,7 @@
     (pin "1" (uuid 5a280d07-a745-4e85-9466-305dd8ed261d))
     (pin "2" (uuid a150e748-d4b9-495a-9fdc-afc2862d4067))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "J6") (unit 1)
         )
@@ -3631,7 +3631,7 @@
     (pin "1" (uuid 7f0bd6e2-8338-4399-9a53-ca26b98cc036))
     (pin "2" (uuid a3d04978-4650-44ba-a5a2-e34908dd3c7d))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C9") (unit 1)
         )
@@ -3657,7 +3657,7 @@
     (pin "1" (uuid 59442c32-1236-4351-abbc-e52743afa247))
     (pin "2" (uuid 4a30f567-6da5-434a-8c82-71180fb425f4))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "J8") (unit 1)
         )
@@ -3683,7 +3683,7 @@
     (pin "1" (uuid cfda53ce-008d-4b65-ae87-017ccafc0f9f))
     (pin "2" (uuid 6f4c6bc9-8462-4219-89a4-5cd9319d3547))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C10") (unit 1)
         )
@@ -3709,7 +3709,7 @@
     (pin "1" (uuid 1eeb5389-2ad3-4692-a265-64acc68d5341))
     (pin "2" (uuid 8e79255d-0208-411e-8769-ffe34a3751b5))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "R7") (unit 1)
         )
@@ -3741,7 +3741,7 @@
     (pin "4" (uuid 8b25fa1f-0a73-48ed-bcec-23691cef887c))
     (pin "8" (uuid e966611d-ed03-4eb9-b74a-f4edfc6b6e9c))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "U2") (unit 1)
         )
@@ -3767,7 +3767,7 @@
     (pin "1" (uuid e298b32b-1cf1-4fad-b485-4b5a8627dae7))
     (pin "2" (uuid e90c5da2-871c-4e46-ace6-867bdb2ed6f9))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "R9") (unit 1)
         )
@@ -3792,7 +3792,7 @@
     )
     (pin "1" (uuid 5574692c-3c06-4024-9b89-a0aa48d2cc3e))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR028") (unit 1)
         )
@@ -3817,7 +3817,7 @@
     )
     (pin "1" (uuid 93408136-a4f2-4967-91c7-0029eabe22ae))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR022") (unit 1)
         )
@@ -3843,7 +3843,7 @@
     (pin "1" (uuid 425b2c21-4efb-4c3b-9229-8b8ef0c1f031))
     (pin "2" (uuid b9650c6f-c611-4a65-81f6-c4a47b7b4839))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C2") (unit 1)
         )
@@ -3874,7 +3874,7 @@
     (pin "1" (uuid 2ab0a6f1-a4b9-4605-88aa-b0a88274e04b))
     (pin "2" (uuid 9c6d492b-98d6-4e2c-9356-353535c7a6e3))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C6") (unit 1)
         )
@@ -3903,7 +3903,7 @@
     (pin "4" (uuid d877660e-d767-4fb3-9232-3f7d028a3270))
     (pin "5" (uuid ce8a345a-fc2b-47cf-a4f6-2180648fec4b))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "J1") (unit 1)
         )
@@ -3933,7 +3933,7 @@
     )
     (pin "1" (uuid 731c47cc-f987-4060-accc-3c78e2578d50))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR015") (unit 1)
         )
@@ -3959,7 +3959,7 @@
     (pin "1" (uuid c570cd65-9fa0-4225-b738-82aea25645bb))
     (pin "2" (uuid ec9485a4-2c54-4b61-af90-f4ff5dfd2cf0))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C12") (unit 1)
         )
@@ -3989,7 +3989,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR05") (unit 1)
         )
@@ -4015,7 +4015,7 @@
     (pin "1" (uuid a33810b4-1ca0-4bce-a0bf-40e75a265b93))
     (pin "2" (uuid dad9cb71-688d-478d-8fc4-453d1211d4ad))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "R8") (unit 1)
         )
@@ -4041,7 +4041,7 @@
     (pin "1" (uuid 9c6a876c-8d42-4e02-846b-ed6c4b46a0ad))
     (pin "2" (uuid 58765fda-e89b-4b15-b29f-8efd97f0fd69))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C13") (unit 1)
         )
@@ -4067,7 +4067,7 @@
     (pin "1" (uuid c62be4ad-3c9a-4348-8f90-59ae6d6a8e7d))
     (pin "2" (uuid a8c39056-750e-4d86-b5ef-f85b4da11266))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "D1") (unit 1)
         )
@@ -4097,7 +4097,7 @@
     )
     (pin "1" (uuid 40005fa7-ef5f-4ca8-bba1-e1d0c2c3cc91))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR014") (unit 1)
         )
@@ -4122,7 +4122,7 @@
     )
     (pin "1" (uuid 2b2515ed-2acd-4b11-b5fc-b9b30609cf35))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR03") (unit 1)
         )
@@ -4147,7 +4147,7 @@
     )
     (pin "1" (uuid 39c78d34-ebb3-47ba-a7ad-1275d045f4e0))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR023") (unit 1)
         )
@@ -4172,7 +4172,7 @@
     )
     (pin "1" (uuid cce3f8a8-c4b9-4bca-bf92-e2cc0f94c368))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#FLG04") (unit 1)
         )
@@ -4197,7 +4197,7 @@
     )
     (pin "1" (uuid 9053d8c4-18d3-4b30-b377-9af62d5292df))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR09") (unit 1)
         )
@@ -4228,7 +4228,7 @@
           (reference "R?") (unit 1)
         )
       )
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "R3") (unit 1)
         )
@@ -4253,7 +4253,7 @@
     )
     (pin "1" (uuid b631b55c-d507-419b-a898-fd4519f7bc87))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR027") (unit 1)
         )
@@ -4278,7 +4278,7 @@
     )
     (pin "1" (uuid 83d6e42d-b2e9-43b3-a689-e449c4507e07))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR012") (unit 1)
         )
@@ -4304,7 +4304,7 @@
     (pin "1" (uuid 6d4ada44-31a0-4fc4-9b55-99aac1d63950))
     (pin "2" (uuid e7e3e4a1-a69e-438a-baf8-726dfa46f89c))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "J7") (unit 1)
         )
@@ -4330,7 +4330,7 @@
     (pin "1" (uuid 8bfbeeeb-601f-4ce0-874f-5cc21b666ad5))
     (pin "2" (uuid 560fb25e-87ba-4cd2-9a54-4773047203b6))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "J3") (unit 1)
         )
@@ -4355,7 +4355,7 @@
     )
     (pin "1" (uuid 91d3dc0a-a15a-4e4c-8f66-ad36c81809ca))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR021") (unit 1)
         )
@@ -4380,7 +4380,7 @@
     )
     (pin "1" (uuid 7f02104c-c170-432a-b93d-631e6f7dd0c8))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR018") (unit 1)
         )
@@ -4405,7 +4405,7 @@
     )
     (pin "1" (uuid cfaab199-540f-492b-8d84-fbac7f9c3d26))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#FLG03") (unit 1)
         )
@@ -4432,7 +4432,7 @@
     (pin "2" (uuid 961ca716-57a7-4d44-9fbb-e07fce731f51))
     (pin "3" (uuid cc1707bd-81ce-4403-aea5-2309952ec8a8))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "J5") (unit 1)
         )
@@ -4458,7 +4458,7 @@
     (pin "1" (uuid cf37408f-2f20-40ca-951d-b745c52c6728))
     (pin "2" (uuid 0e3cb7d1-1a6f-4bc1-bad7-63f9b9aabd7b))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "J9") (unit 1)
         )
@@ -4488,7 +4488,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR01") (unit 1)
         )
@@ -4514,7 +4514,7 @@
     (pin "1" (uuid e4646837-aad4-4258-aa52-95167ae57702))
     (pin "2" (uuid c9f07f94-7fdc-43d7-b7db-7870b8962470))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C5") (unit 1)
         )
@@ -4546,7 +4546,7 @@
     (pin "1" (uuid 22c55437-e249-4e75-84fe-7a73ecaeedee))
     (pin "2" (uuid a3210c5a-ba10-4c54-8b5e-baa129632b96))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "D2") (unit 1)
         )
@@ -4576,7 +4576,7 @@
           (reference "#PWR?") (unit 1)
         )
       )
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR02") (unit 1)
         )
@@ -4603,7 +4603,7 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#SYM1") (unit 1)
         )
@@ -4628,7 +4628,7 @@
     )
     (pin "1" (uuid 59dcb5a4-a460-47f2-9151-6ed7cd4ed023))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#FLG02") (unit 1)
         )
@@ -4655,7 +4655,7 @@
     (pin "2" (uuid 561e83b9-8300-4992-b91d-d870895547cd))
     (pin "3" (uuid 1d827aa8-ebfb-4af0-887e-c015025653c5))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "SW1") (unit 1)
         )
@@ -4681,7 +4681,7 @@
     (pin "1" (uuid 56bd57d8-9dd2-4157-9af8-d76837e58831))
     (pin "2" (uuid 8b9b748d-962d-4504-b3b3-2ed9e4228a9a))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C8") (unit 1)
         )
@@ -4706,7 +4706,7 @@
     )
     (pin "1" (uuid 00237ccf-d678-4a05-97e9-10af4de299b2))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR013") (unit 1)
         )
@@ -4731,7 +4731,7 @@
     )
     (pin "1" (uuid 2c3b9bbb-f9d9-42e7-a9c7-887a2f3da1e1))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR04") (unit 1)
         )
@@ -4757,7 +4757,7 @@
     (pin "1" (uuid 62b1afc0-82a2-4c0f-adf7-66152cd82226))
     (pin "2" (uuid 8dc9ce6f-c5fe-48dc-b7d0-40bfddfe8358))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C4") (unit 1)
         )
@@ -4783,7 +4783,7 @@
     (pin "1" (uuid 7e459bea-58cf-4a95-a563-3f168ba7cd25))
     (pin "2" (uuid 009f1553-66cc-43a4-b22c-6b880439bda2))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C7") (unit 1)
         )
@@ -4808,7 +4808,7 @@
     )
     (pin "1" (uuid 6003adf6-32f6-44f9-9877-b969b38f6d66))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#FLG01") (unit 1)
         )
@@ -4834,7 +4834,7 @@
     (pin "1" (uuid 6e41a444-0d64-4cdf-afed-56d1d506dd1a))
     (pin "2" (uuid 63d61207-b7fa-495a-9122-7e776f8a62a0))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "R2") (unit 1)
         )
@@ -4866,7 +4866,7 @@
     (pin "2" (uuid 13de91e9-dd57-4368-8ef5-a51f6521c449))
     (pin "3" (uuid 6ada1cfc-737d-4963-8fed-599e5a68148a))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "RV3") (unit 1)
         )
@@ -4891,7 +4891,7 @@
     )
     (pin "1" (uuid d7523010-efea-475e-adfe-cd908b58c9a5))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR010") (unit 1)
         )
@@ -4935,7 +4935,7 @@
     (pin "8" (uuid 5e0dcff6-30ed-44be-8ed8-c95e99bf649d))
     (pin "9" (uuid e219549b-38b8-4823-9ed3-bb5ce80cbb62))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "U3") (unit 1)
         )
@@ -4960,7 +4960,7 @@
     )
     (pin "1" (uuid c34849c7-14bb-410b-80d0-bddd1157b4cd))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR024") (unit 1)
         )
@@ -4977,7 +4977,7 @@
     (property "Value" "PN2222A" (at 396.875 205.74 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "Package_TO_SOT_THT:TO-92_Inline" (at 396.875 206.375 0)
+    (property "Footprint" "Package_TO_SOT_THT:TO-92_HandSolder" (at 396.875 206.375 0)
       (effects (font (size 1.27 1.27) italic) (justify left) hide)
     )
     (property "Datasheet" "https://www.onsemi.com/pub/Collateral/PN2222-D.PDF" (at 391.795 204.47 0)
@@ -4987,7 +4987,7 @@
     (pin "2" (uuid 4a74736c-5cb3-4de3-a1bf-7efe13a2ec92))
     (pin "3" (uuid b0f59556-766f-4bab-8665-d5ea7ab6bc2b))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "Q4") (unit 1)
         )
@@ -5021,7 +5021,7 @@
           (reference "J?") (unit 1)
         )
       )
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "J2") (unit 1)
         )
@@ -5038,7 +5038,7 @@
     (property "Value" "2N7000" (at 85.725 161.925 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "Package_TO_SOT_THT:TO-92_Inline" (at 86.995 162.56 0)
+    (property "Footprint" "Package_TO_SOT_THT:TO-92_HandSolder" (at 86.995 162.56 0)
       (effects (font (size 1.27 1.27) italic) (justify left) hide)
     )
     (property "Datasheet" "https://www.vishay.com/docs/70226/70226.pdf" (at 92.075 160.655 0)
@@ -5048,7 +5048,7 @@
     (pin "2" (uuid 71171471-12c2-432f-8494-4a762443a349))
     (pin "3" (uuid 630606ef-7c18-4af4-97f7-ef2c72c8beb5))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "Q2") (unit 1)
         )
@@ -5073,7 +5073,7 @@
     )
     (pin "1" (uuid 8b12aed9-601c-47b5-9eb4-8908eea7715b))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR017") (unit 1)
         )
@@ -5104,7 +5104,7 @@
     (pin "7" (uuid d3cc97d0-ad05-4f97-b499-863901f1dfb6))
     (pin "8" (uuid decbdf97-6309-4c97-8868-b604b88371df))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "U1") (unit 1)
         )
@@ -5135,7 +5135,7 @@
     (pin "S" (uuid 98aa98da-e618-46f9-8dde-4a5f7276dd22))
     (pin "T" (uuid b8aa0fd7-156d-4b31-bd9c-a8a0384a4d6f))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "J4") (unit 1)
         )
@@ -5162,7 +5162,7 @@
     (pin "2" (uuid 062d2068-10fe-484b-870b-e755801618f0))
     (pin "3" (uuid 85847eb8-8bdd-4c8f-8076-806f8cbaabb4))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "RV2") (unit 1)
         )
@@ -5187,7 +5187,7 @@
     )
     (pin "1" (uuid 48cb5484-c72b-4c05-8acb-4f2b85f8476e))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR020") (unit 1)
         )
@@ -5212,7 +5212,7 @@
     )
     (pin "1" (uuid f2f5cb2a-6cbb-4a14-980b-a6af57938e90))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR026") (unit 1)
         )
@@ -5238,7 +5238,7 @@
     (pin "1" (uuid 919bf406-e0e1-4868-8751-6f4b8d26d259))
     (pin "2" (uuid 662c4023-f395-4325-b1d3-436820c77f1f))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "R5") (unit 1)
         )
@@ -5269,7 +5269,7 @@
     (pin "1" (uuid ec56389f-0b99-4827-8bbe-971c991e0d41))
     (pin "2" (uuid 65d026eb-e91e-4f4b-968d-975d37cf95c3))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C1") (unit 1)
         )
@@ -5306,7 +5306,7 @@
     (pin "7" (uuid a021f0e9-07d5-4b56-8eca-c8c09dd598a1))
     (pin "8" (uuid bb51a997-d5ae-4f7f-8a6e-623c9cdeb0b3))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "U4") (unit 1)
         )
@@ -5331,7 +5331,7 @@
     )
     (pin "1" (uuid f27dff09-a63e-47df-8798-6ade0f030a04))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR016") (unit 1)
         )
@@ -5362,7 +5362,7 @@
           (reference "R?") (unit 1)
         )
       )
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "R1") (unit 1)
         )
@@ -5388,7 +5388,7 @@
     (pin "1" (uuid 4b775e41-d39c-4787-aa63-1288895f889b))
     (pin "2" (uuid 9a1d8305-005a-4a11-864e-ca99069c73d0))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C3") (unit 1)
         )
@@ -5414,7 +5414,7 @@
     (pin "1" (uuid 8271d132-ca07-4ecd-971e-72d84c4b2d35))
     (pin "2" (uuid cf7adf5a-3199-42ea-a590-280c7692f808))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "C11") (unit 1)
         )
@@ -5445,7 +5445,7 @@
           (reference "R?") (unit 1)
         )
       )
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "R4") (unit 1)
         )
@@ -5470,7 +5470,7 @@
     )
     (pin "1" (uuid adde15ad-9851-4d25-82bc-84b8d1f8308c))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR011") (unit 1)
         )
@@ -5487,7 +5487,7 @@
     (property "Value" "2N7000" (at 365.125 86.995 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "Package_TO_SOT_THT:TO-92_Inline" (at 363.855 87.63 0)
+    (property "Footprint" "Package_TO_SOT_THT:TO-92_HandSolder" (at 363.855 87.63 0)
       (effects (font (size 1.27 1.27) italic) (justify left) hide)
     )
     (property "Datasheet" "https://www.vishay.com/docs/70226/70226.pdf" (at 358.775 85.725 0)
@@ -5497,7 +5497,7 @@
     (pin "2" (uuid 4736dbaa-5998-485a-8856-4c2237834fba))
     (pin "3" (uuid 0a9d0e22-d083-4224-98a8-f4d35743415a))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "Q3") (unit 1)
         )
@@ -5529,7 +5529,7 @@
     (pin "4" (uuid e5704569-083c-4d48-be9d-af4d13fbb28b))
     (pin "8" (uuid b2aba409-d461-4e67-9e66-5aa5a336efdc))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "U2") (unit 2)
         )
@@ -5554,7 +5554,7 @@
     )
     (pin "1" (uuid 94bd1c29-baf5-4158-b94d-fe8e2c837832))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR08") (unit 1)
         )
@@ -5585,7 +5585,7 @@
     (pin "1" (uuid 215fa36a-985f-48f6-8048-5603a8b6f3d4))
     (pin "2" (uuid e57e5c1e-3730-47be-b75a-fe234d3d1625))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "R6") (unit 1)
         )
@@ -5610,7 +5610,7 @@
     )
     (pin "1" (uuid d0efa7e6-72ce-4cd3-bd44-7a9ad1797084))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR029") (unit 1)
         )
@@ -5635,7 +5635,7 @@
     )
     (pin "1" (uuid 2b0c5c76-df32-4421-8834-a739d7a10cf3))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR025") (unit 1)
         )
@@ -5667,7 +5667,7 @@
     (pin "4" (uuid 526aa12f-92da-4b0e-bd06-330705cc8a30))
     (pin "8" (uuid a28daee8-f049-49c0-8b32-644078c9625b))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "U2") (unit 3)
         )
@@ -5699,7 +5699,7 @@
     (pin "1" (uuid ac7d0881-d090-4b74-aa71-44f6f2874408))
     (pin "2" (uuid e4c39440-1b12-46f7-829a-e36ee9d6382c))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "D3") (unit 1)
         )
@@ -5724,7 +5724,7 @@
     )
     (pin "1" (uuid 4476ab08-d17e-4f3f-a652-e644cc532634))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR06") (unit 1)
         )
@@ -5741,7 +5741,7 @@
     (property "Value" "2N7000" (at 35.56 151.765 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "Package_TO_SOT_THT:TO-92_Inline" (at 36.83 152.4 0)
+    (property "Footprint" "Package_TO_SOT_THT:TO-92_HandSolder" (at 36.83 152.4 0)
       (effects (font (size 1.27 1.27) italic) (justify left) hide)
     )
     (property "Datasheet" "https://www.vishay.com/docs/70226/70226.pdf" (at 41.91 150.495 0)
@@ -5751,7 +5751,7 @@
     (pin "2" (uuid 2e5df981-bb7d-4d97-a9d0-d7d82f5fd1e5))
     (pin "3" (uuid abdd3fee-fac5-4731-91bb-71d40d0af65e))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "Q1") (unit 1)
         )
@@ -5777,7 +5777,7 @@
     (pin "1" (uuid 9fff5ed2-a821-41ed-8ff7-0e29c780c8b1))
     (pin "2" (uuid d58e4493-1cee-439e-bbe2-174592ccfcd8))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "J10") (unit 1)
         )
@@ -5802,7 +5802,7 @@
     )
     (pin "1" (uuid c9f55619-5879-4b64-888f-ce4131aff4ae))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR07") (unit 1)
         )
@@ -5827,7 +5827,7 @@
     )
     (pin "1" (uuid e5db66c5-400c-41e2-8362-fc044649b3aa))
     (instances
-      (project "MIDI_Board"
+      (project "InterfaceBoard"
         (path "/788960ad-839f-4803-b3a5-d2df46c1a6b5"
           (reference "#PWR019") (unit 1)
         )
