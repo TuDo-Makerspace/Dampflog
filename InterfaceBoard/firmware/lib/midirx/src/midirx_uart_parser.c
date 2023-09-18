@@ -100,20 +100,8 @@ void midirx_parse_uart_rx(uint8_t data)
 
 	switch (state)
 	{
-#ifdef SYSEX_ENABLED
-	case SYSEX:
-		if (parse_sysex(data) != RECEIVING)
-			state = STATUS;
-		break;
-#endif
 	case STATUS:
 		if (!midirx_is_status(data))
-		{
-			return;
-		}
-
-		if (_midi_status_filter != NULL &&
-		    !_midi_status_filter(data))
 		{
 			return;
 		}
@@ -122,14 +110,26 @@ void midirx_parse_uart_rx(uint8_t data)
 		if (midirx_status_is_cmd(data, MIDI_STAT_SYSEX))
 		{
 			state = SYSEX;
+			return;
 		}
-		else
 #endif
+		if (_midi_status_filter != NULL &&
+		    !_midi_status_filter(data))
 		{
-			msg.status = data;
-			state = DATA1;
+			return;
 		}
+
+		msg.status = data;
+		state = DATA1;
+
 		break;
+
+#ifdef SYSEX_ENABLED
+	case SYSEX:
+		if (parse_sysex(data) != RECEIVING)
+			state = STATUS;
+		break;
+#endif
 
 	case DATA1:
 		if (!midirx_is_data(data))
