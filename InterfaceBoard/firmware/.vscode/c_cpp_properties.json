@@ -13,7 +13,10 @@
             ],
             "defines": [
                 "STM8S103",
-                "__SDCC"
+                "__SDCC",
+                "SYSEX_ENABLED",
+                "MAX_SYSEX_LEN=8",
+                "F_CPU=16000000UL"
             ]
         }
     ],

@@ -4,7 +4,12 @@
         "stm8s_itc.h": "c",
         "stm8s_it.h": "c",
         "stm8s_spi.h": "c",
-        "msp49xx.h": "c"
+        "msp49xx.h": "c",
+        "midirx_uart_parser.h": "c",
+        "midirx_sysex_msg.h": "c",
+        "midirx_msg.h": "c",
+        "midirx.h": "c",
+        "stdio.h": "c"
     },
     "taskExplorer.exclude": [
         "**/.vscode-test/**",

@@ -35,6 +35,9 @@
 void midirx_on_midi_msg(void (*callback)(midi_msg_t *msg));
 extern void (*_midi_msg_callback)(midi_msg_t *msg); ///< Pointer to the callback function
 
+void midirx_on_sysex_msg(void (*callback)(uint8_t *data, size_t len));
+extern void (*_sysex_msg_callback)(uint8_t *data, size_t len);
+
 /**
  * @brief Calls a callback function which pre-emptively filters incoming MIDI messages based on their status byte
  *

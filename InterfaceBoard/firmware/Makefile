@@ -66,7 +66,7 @@ CP         := cp
 
 # Build flags
 BUILD_TARGET_DEVICE   := STM8S103                # Specify the target device here! (See stm8s.h for available devices)
-DEFINES               := -D$(BUILD_TARGET_DEVICE)  # -DEXAMPLE_DEFINE -DANOTHER_DEFINE
+DEFINES               := -D$(BUILD_TARGET_DEVICE)  -DSYSEX_ENABLED -DMAX_SYSEX_LEN=10 -DF_CPU=16000000UL
 
 # Object files directory and extension
 OBJ       := ./build
@@ -145,6 +145,23 @@ DCE_EXCLUDE_SYMBOLS :=	-x _cfg \
 			-x _SPI_Cmd \
 			-x _CLK_PeripheralClockConfig \
 			-x _CLK_DeInit \
+			-x _midirx_parse_uart_rx \
+			-x _UART1_ClearFlag \
+			-x _midirx_on_midi_msg \
+			-x _UART1_ClearITPendingBit \
+			-x _UART1_ReceiveData8 \
+			-x _status_filter \
+			-x _handle_midi_msg \
+			-x _GPIO_WriteLow \
+			-x _HSIDivFactor \
+			-x _UART1_Cmd \
+			-x _putchar \
+			-x _UART1_GetFlagStatus \
+			-x _UART1_SendData8 \
+			-x _handle_sysex_msg \
+			-x _midirx_on_sysex_msg \
+			-x _LOOPS_PER_MS \
+			-x _setup_uart
 
 DCE_EXCLUDE_ASM := $(FW_ASM)/stm8s_it.asm
 
@@ -280,11 +297,11 @@ $(MIDIRX_OBJ)%.$(OBJ_EXT): $(MIDIRX_OBJ)%.asm toolchain_check
 
 $(MIDIRX_OBJ)%.asm: $(MIDIRX_SRC)%.c toolchain_check
 	@$(MKDIR) -p $(MIDIRX_OBJ)
-	$(CC) $< $(DEFINE) $(CC_FLAGS) -S -o $@
+	$(CC) $< $(DEFINES) $(CC_FLAGS) -S -o $@
 
 $(MIDIRX_MM)%.d: $(MIDIRX_SRC)%.c toolchain_check
 	@$(MKDIR) -p $(MIDIRX_OBJ)
-	$(CC) $< $(DEFINE) $(CC_FLAGS) -MM > $@
+	$(CC) $< $(DEFINES) $(CC_FLAGS) -MM > $@
 
 # Firmware objects
 fw_obj: $(FW_MMS) $(FW_OBJS) toolchain_check

@@ -27,6 +27,13 @@ void midirx_on_midi_msg(void (*callback)(midi_msg_t *msg))
 }
 
 // See header file for documentation
+void (*_sysex_msg_callback)(uint8_t *data, size_t len) = NULL;
+void midirx_on_sysex_msg(void (*callback)(uint8_t *data, size_t len))
+{
+	_sysex_msg_callback = callback;
+}
+
+// See header file for documentation
 bool (*_midi_status_filter)(midi_status_t status);
 void midirx_set_status_filter(bool (*callback)(midi_status_t status))
 {

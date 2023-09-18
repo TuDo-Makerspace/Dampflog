@@ -17,21 +17,25 @@
  * Description: Template main file for STM8S103F3P6 PlatformIO projects
  */
 
+#include <stdio.h>
+
 #include "midirx.h"
 #include "midirx_uart_parser.h"
 #include "midirx_msg.h"
 
-typedef enum {
+typedef enum
+{
 	STATUS,
 	DATA1,
-	DATA2
+	DATA2,
+	SYSEX
 } midi_rx_state_t;
 
 /**
  * @brief Calls callback functions after a MIDI message has been received
  * @param msg Pointer to a @ref midi_msg_t struct
  */
-inline void on_rx_complete(midi_msg_t *msg)
+inline void on_midi_rx_complete(midi_msg_t *msg)
 {
 	if (_midi_msg_callback == NULL)
 		return;
@@ -39,29 +43,97 @@ inline void on_rx_complete(midi_msg_t *msg)
 	_midi_msg_callback(msg);
 }
 
+#ifdef SYSEX_ENABLED
+
+#ifndef MAX_SYSEX_LEN
+#error "MAX_SYSEX_LEN must be defined if SysEx is enabled"
+#endif
+
+typedef enum
+{
+	RECEIVING,
+	DONE,
+	LEN_EXCEEDED
+} sysex_rx_state_t;
+
+inline void on_sysex_complete(uint8_t *data, size_t len)
+{
+	if (_sysex_msg_callback == NULL)
+		return;
+
+	_sysex_msg_callback(data, len);
+}
+
+inline sysex_rx_state_t parse_sysex(uint8_t data)
+{
+	static uint8_t buf[MAX_SYSEX_LEN];
+	static size_t buf_index = 0;
+
+	if (data == MIDI_STAT_SYSEX_END)
+	{
+		if (buf_index > 0)
+		{
+			on_sysex_complete(buf, buf_index);
+			buf_index = 0;
+		}
+
+		return DONE;
+	}
+
+	if (buf_index == MAX_SYSEX_LEN)
+	{
+		buf_index = 0;
+		return LEN_EXCEEDED;
+	}
+
+	buf[buf_index++] = data;
+	return RECEIVING;
+}
+
+#endif
+
 // See header file for documentation
 void midirx_parse_uart_rx(uint8_t data)
 {
 	static midi_msg_t msg;
 	static midi_rx_state_t state = STATUS;
 
-	switch (state) {
+	switch (state)
+	{
+#ifdef SYSEX_ENABLED
+	case SYSEX:
+		if (parse_sysex(data) != RECEIVING)
+			state = STATUS;
+		break;
+#endif
 	case STATUS:
-		if (!midirx_is_status(data)) {
+		if (!midirx_is_status(data))
+		{
 			return;
 		}
 
 		if (_midi_status_filter != NULL &&
-		    !_midi_status_filter(data)) {
+		    !_midi_status_filter(data))
+		{
 			return;
 		}
 
-		msg.status = data;
-		state = DATA1;
+#ifdef SYSEX_ENABLED
+		if (midirx_status_is_cmd(data, MIDI_STAT_SYSEX))
+		{
+			state = SYSEX;
+		}
+		else
+#endif
+		{
+			msg.status = data;
+			state = DATA1;
+		}
 		break;
 
 	case DATA1:
-		if (!midirx_is_data(data)) {
+		if (!midirx_is_data(data))
+		{
 			state = STATUS;
 			return;
 		}
@@ -71,14 +143,15 @@ void midirx_parse_uart_rx(uint8_t data)
 		break;
 
 	case DATA2:
-		if (!midirx_is_data(data)) {
+		if (!midirx_is_data(data))
+		{
 			state = STATUS;
 			return;
 		}
 
 		msg.data2 = data;
 		state = STATUS;
-		on_rx_complete(&msg);
+		on_midi_rx_complete(&msg);
 		break;
 	}
 }
