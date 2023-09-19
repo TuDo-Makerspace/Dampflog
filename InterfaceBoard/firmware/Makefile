@@ -66,7 +66,7 @@ CP         := cp
 
 # Build flags
 BUILD_TARGET_DEVICE   := STM8S103                # Specify the target device here! (See stm8s.h for available devices)
-DEFINES               := -D$(BUILD_TARGET_DEVICE)  -DSYSEX_ENABLED -DMAX_SYSEX_LEN=10 -DF_CPU=16000000UL
+DEFINES               := -D$(BUILD_TARGET_DEVICE) -DSYSEX_ENABLED -DMAX_SYSEX_LEN=10 -DF_CPU=16000000UL -DDEBUG
 
 # Object files directory and extension
 OBJ       := ./build
@@ -161,7 +161,8 @@ DCE_EXCLUDE_SYMBOLS :=	-x _cfg \
 			-x _handle_sysex_msg \
 			-x _midirx_on_sysex_msg \
 			-x _LOOPS_PER_MS \
-			-x _setup_uart
+			-x _setup_uart \
+			-x _midi_2_dac
 
 DCE_EXCLUDE_ASM := $(FW_ASM)/stm8s_it.asm
 

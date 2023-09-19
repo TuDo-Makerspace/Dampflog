@@ -3,9 +3,14 @@
 #include <stm8s.h>
 #include <stm8s_it.h>
 
+#include <log.h>
 #include <msp49xx.h>
 #include <midirx.h>
 #include <delay_ms.h>
+#include <midi_2_dac.h>
+
+#define FIMRWARE_REV "0.1"
+#define SOURCE_CODE "https://github.com/TU-DO-Makerspace/Dampflog"
 
 // DAC
 
@@ -41,7 +46,10 @@
 #define SYSEX_MANUFACTURER_ID 0x7D // Manufacturer ID for private use
 
 #define SYSEX_SET_DAC 0x01
+
 #define SYSEX_SET_GATE 0x02
+#define SYSEX_SET_GATE_CLOSE_VAL 0x00
+#define SYSEX_SET_GATE_OPEN_VAL 0x01
 
 const mcp49xx_cfg cfg = {
     .dac = WRITE,
@@ -61,7 +69,7 @@ void setup_gpios(void)
 	GPIO_Init(GATE_PORT, GATE_PIN, GPIO_MODE_OUT_PP_LOW_FAST);
 }
 
-void setup_clock(void)
+void setup_clocks(void)
 {
 	CLK_DeInit();
 	CLK_HSECmd(DISABLE);
@@ -114,14 +122,6 @@ void setup_uart(void)
 	UART1_ITConfig(UART1_IT_RXNE_OR, ENABLE);
 	enableInterrupts();
 	UART1_Cmd(ENABLE);
-}
-
-int putchar(int c)
-{
-	while (UART1_GetFlagStatus(UART1_FLAG_TXE) != SET)
-		;
-	UART1_SendData8(c);
-	return c;
 }
 
 void spi_write16(uint16_t data)
@@ -178,51 +178,108 @@ void handle_midi_msg(midi_msg_t *msg)
 	const midi_status_t status = msg->status;
 	// const uint8_t ch = midirx_get_ch(status);
 
+	LOG_DEBUG("Processing MIDI Message: %02X, %02X, %02X", msg->status, msg->data1, msg->data2);
+
 	if (midirx_status_is_cmd(status, MIDI_STAT_NOTE_ON))
 	{
+		const uint8_t note = msg->data1;
+
+		LOG_DEBUG("Message is NOTE ON, Note: %d", note);
+
+		// Should never occur, but just in case.
+		if (note > MIDI_DATA_MAX_VAL)
+		{
+			LOG_DEBUG("Invalid NOTE ON, note is out of range (0-127)");
+			return;
+		}
+
+		const uint16_t dacval = midi_2_dac[note];
+
+		LOG_DEBUG("Note %d is mapped to DAC value %d", note, dacval);
+
+		spi_write16(mcp49xx_data(cfg, dacval));
+
+		LOG_DEBUG("DAC set to %d", dacval);
+
 		OPEN_GATE();
+		LOG_DEBUG("Opened GATE");
 	}
 	else if (midirx_status_is_cmd(status, MIDI_STAT_NOTE_OFF))
 	{
+		LOG_DEBUG("Message is NOTE OFF, Note: %d", msg->data1);
+
 		CLOSE_GATE();
+		LOG_DEBUG("Closed GATE");
+
+		/* Please note that the GATE is ANDed with the analog
+		 * gate input (GATE Jack and HOLD Switch), meaning that
+		 * the gate will only be closed if the analog gate input
+		 * is also closed. */
+	}
+	else
+	{
+		LOG_DEBUG("Unhandled MIDI message: %02X", status);
 	}
 }
 
 void handle_sysex_msg(uint8_t *buf, size_t len)
 {
-	if (len < 2)
-		return;
+	LOG_DEBUG("Processing SYSEX message");
 
-	uint8_t manufacturer_id = buf[0];
-	uint8_t message_type = buf[1];
+	if (len < 2)
+	{
+		LOG_DEBUG("SYSEX message is too short to be valid")
+		return;
+	}
+
+	const uint8_t manufacturer_id = buf[0];
+	const uint8_t message_type = buf[1];
 
 	if (manufacturer_id != SYSEX_MANUFACTURER_ID)
+	{
+		LOG_DEBUG("Missmatching SYSEX Manufacturer ID: %02X, expecting: %02X", manufacturer_id, SYSEX_MANUFACTURER_ID);
 		return;
+	}
 
 	switch (message_type)
 	{
 	case SYSEX_SET_DAC:
 		if (len == 4)
 		{
+			LOG_DEBUG("Received SET DAC message");
 			uint16_t value = buf[2] << 8 | buf[3];
 			spi_write16(mcp49xx_data(cfg, value));
-			printf("Set DAC to %d\n", value);
+			LOG_DEBUG("Set DAC to %d", value);
+		}
+		else
+		{
+			LOG_DEBUG("Bad SET DAC message");
 		}
 		break;
 	case SYSEX_SET_GATE:
 		if (len == 3)
 		{
+			LOG_DEBUG("Received SET GATE message");
+
 			uint8_t value = buf[2];
-			if (value == 0x00)
+			if (value == SYSEX_SET_GATE_CLOSE_VAL)
 			{
 				CLOSE_GATE();
-				printf("Closed gate\n");
+				LOG_DEBUG("Closed gate");
 			}
-			else if (value == 0x01)
+			else if (value == SYSEX_SET_GATE_OPEN_VAL)
 			{
 				OPEN_GATE();
-				printf("Opened gate\n");
+				LOG_DEBUG("Opened gate");
 			}
+			else
+			{
+				LOG_DEBUG("Invalid GATE value, expected %02X or %02X", SYSEX_SET_GATE_CLOSE_VAL, SYSEX_SET_GATE_OPEN_VAL);
+			}
+		}
+		else
+		{
+			LOG_DEBUG("Bad SET GATE message");
 		}
 		break;
 	default:
@@ -237,10 +294,15 @@ void main(void)
 	midirx_on_sysex_msg(handle_sysex_msg);
 
 	setup_gpios();
-	setup_clock();
+	setup_clocks();
 	setup_spi();
 	setup_uart();
 
+	LOG("Dampflog Interface Board")
+	LOG("Firmware Revision: %s", FIMRWARE_REV);
+	LOG("Source Code: %s", SOURCE_CODE);
+
+	LOG("Listening for MIDI messages...");
 	while (true)
 		;
 }
