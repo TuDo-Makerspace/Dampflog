@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2023 Patrick Pedersen, TU-DO Makerspace
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * Description: Main firmware code for the Dampflog Interface Board.
+ *
+ */
+
 #include <stdio.h>
 
 #include <stm8s.h>
@@ -6,8 +26,13 @@
 #include <log.h>
 #include <msp49xx.h>
 #include <midirx.h>
-#include <delay_ms.h>
 #include <midi_2_dac.h>
+
+////////////////////////////////////////////
+// Defines (Pins, Magic Numbers, etc.)
+////////////////////////////////////////////
+
+// Meta
 
 #define FIMRWARE_REV "0.1"
 #define SOURCE_CODE "https://github.com/TU-DO-Makerspace/Dampflog"
@@ -36,7 +61,7 @@
 #define OPEN_GATE() GPIO_WriteHigh(GATE_PORT, GATE_PIN)
 #define CLOSE_GATE() GPIO_WriteLow(GATE_PORT, GATE_PIN)
 
-// MIDI
+// UART + MIDI + SYSEX
 
 #define UART_PORT GPIOD
 #define UART_TX_PIN GPIO_PIN_5
@@ -46,29 +71,49 @@
 #define SYSEX_MANUFACTURER_ID 0x7D // Manufacturer ID for private use
 
 #define SYSEX_SET_DAC 0x01
-
 #define SYSEX_SET_GATE 0x02
 #define SYSEX_SET_GATE_CLOSE_VAL 0x00
 #define SYSEX_SET_GATE_OPEN_VAL 0x01
 
+////////////////////////////////////////////
+// DAC Configuration
+////////////////////////////////////////////
+
 const mcp49xx_cfg cfg = {
     .dac = WRITE,
+    .buffer = DAC_BUF_ON,
     .gain = DAC_GAIN_1X,
     .shutdown = DAC_ACTIVE,
-    .buffer = DAC_BUF_ON,
 };
 
+////////////////////////////////////////////
+// Peripheral Setup
+////////////////////////////////////////////
+
+/**
+ * @brief Sets up the GPIO's
+ */
 void setup_gpios(void)
 {
+	// DAC (SPI)
 	GPIO_Init(CS_PORT, CS_PIN, GPIO_MODE_OUT_PP_HIGH_FAST);
 	GPIO_Init(SCK_PORT, SCK_PIN, GPIO_MODE_OUT_PP_HIGH_FAST);
 	GPIO_Init(MOSI_PORT, MOSI_PIN, GPIO_MODE_OUT_PP_HIGH_FAST);
-	GPIO_Init(LDAC_PORT, LDAC_PIN, GPIO_MODE_OUT_PP_LOW_FAST); // Tie LDAC low since we only have one DAC.
+
+	// Tie LDAC low since we only have one DAC.
+	GPIO_Init(LDAC_PORT, LDAC_PIN, GPIO_MODE_OUT_PP_LOW_FAST);
+
+	// MIDI/UART
 	GPIO_Init(UART_PORT, UART_TX_PIN, GPIO_MODE_OUT_PP_HIGH_FAST);
 	GPIO_Init(UART_PORT, UART_RX_PIN, GPIO_MODE_IN_PU_NO_IT);
+
+	// GATE
 	GPIO_Init(GATE_PORT, GATE_PIN, GPIO_MODE_OUT_PP_LOW_FAST);
 }
 
+/**
+ * @brief Sets up the clocks
+ */
 void setup_clocks(void)
 {
 	CLK_DeInit();
@@ -94,6 +139,9 @@ void setup_clocks(void)
 	CLK_PeripheralClockConfig(CLK_PERIPHERAL_TIMER4, DISABLE);
 }
 
+/**
+ * @brief Set up
+ */
 void setup_spi(void)
 {
 	SPI_DeInit();
@@ -109,6 +157,9 @@ void setup_spi(void)
 	SPI_Cmd(ENABLE);
 }
 
+/**
+ * @brief Sets up the UART
+ */
 void setup_uart(void)
 {
 	UART1_DeInit();
@@ -124,6 +175,9 @@ void setup_uart(void)
 	UART1_Cmd(ENABLE);
 }
 
+/**
+ * @brief Writes 16 bits to SPI
+ */
 void spi_write16(uint16_t data)
 {
 	while (SPI_GetFlagStatus(SPI_FLAG_BSY))
@@ -143,6 +197,11 @@ void spi_write16(uint16_t data)
 	GPIO_WriteHigh(CS_PORT, CS_PIN);
 }
 
+/**
+ * @brief Status filter callback to ignore irrelevant MIDI messages
+ * @param status MIDI status byte passed by midirx
+ * @return True if the message should be processed, false if it should be discarded
+ */
 bool status_filter(midi_status_t status)
 {
 	if (midirx_status_is_cmd(status, MIDI_STAT_NOTE_ON) ||
@@ -154,6 +213,19 @@ bool status_filter(midi_status_t status)
 	return false;
 }
 
+/**
+ * @brief MIDI message callback, handles incoming MIDI messages
+ * @param msg MIDI message passed by midirx
+ *
+ * Callback to handle incoming MIDI messages.
+ * Currently the handler does the following:
+ * 	- On NOTE ON:
+ * 		- Set the DAC to the corresponding value
+ * 		- Open the GATE
+ * 	- On NOTE OFF:
+ * 		- Close the GATE
+ *	- Unhandled messages are discarded
+ */
 void handle_midi_msg(midi_msg_t *msg)
 {
 	const midi_status_t status = msg->status;
@@ -203,6 +275,29 @@ void handle_midi_msg(midi_msg_t *msg)
 	}
 }
 
+/**
+ * @brief SYSEX message callback, handles incoming SYSEX messages
+ * @param buf SYSEX message buffer passed by midirx
+ * @param len Length of the SYSEX message
+ *
+ * Callback to handle incoming SYSEX messages.
+ *
+ * THe fomat of a SYSEX message is as follows:
+ *
+ * 	0xF0 <MANUFACTURER_ID> <MESSAGE_TYPE> <DATA1> <DATA2> ... 0xF7
+ *
+ * The expected manufacturer ID and possible message types are defined
+ * in the defines section at the top of this file.
+ *
+ * Currently the handler does the following:
+ * 	- On SET DAC <DAC VALUE MSB> <DAC VALUE LSB>:
+ * 		- Set the DAC to the corresponding 12-bit value
+ * 	- On SET GATE <GATE VALUE>:
+ * 		- Open or close the GATE
+ * 		- The GATE value is expected to be either 0x00 (close) or 0x01 (open)
+ * 	- Invalid or unhandled messages are discarded
+ *
+ **/
 void handle_sysex_msg(uint8_t *buf, size_t len)
 {
 	LOG_DEBUG("Processing SYSEX message");
@@ -228,7 +323,7 @@ void handle_sysex_msg(uint8_t *buf, size_t len)
 		if (len == 4)
 		{
 			LOG_DEBUG("Received SET DAC message");
-			uint16_t value = buf[2] << 8 | buf[3];
+			uint16_t value = buf[2] << 8 | buf[3]; // Combine MSB and LSB into 16-bit value
 			spi_write16(mcp49xx_data(cfg, value));
 			LOG_DEBUG("Set DAC to %d", value);
 		}
@@ -268,12 +363,20 @@ void handle_sysex_msg(uint8_t *buf, size_t len)
 	}
 }
 
+/**
+ * @brief Main function
+ *
+ * Sets up callbacks and peripherals and then enters an infinite loop.
+ * The callbacks are called by the midirx library through external interrupts.
+ */
 void main(void)
 {
+	// Initialize Callbacks
 	midirx_set_status_filter(status_filter);
 	midirx_on_midi_msg(handle_midi_msg);
 	midirx_on_sysex_msg(handle_sysex_msg);
 
+	// Initialize Peripherals
 	setup_gpios();
 	setup_clocks();
 	setup_spi();
