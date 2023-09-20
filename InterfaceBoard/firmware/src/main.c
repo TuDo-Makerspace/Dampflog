@@ -145,32 +145,13 @@ void spi_write16(uint16_t data)
 
 bool status_filter(midi_status_t status)
 {
-	// static bool sysex_started = false;
+	if (midirx_status_is_cmd(status, MIDI_STAT_NOTE_ON) ||
+	    midirx_status_is_cmd(status, MIDI_STAT_NOTE_OFF))
+	{
+		return true;
+	}
 
-	// if (midirx_status_is_cmd(status, MIDI_STAT_SYSEX_END))
-	// {
-	// 	return sysex_started = false;
-	// 	return true;
-	// }
-
-	// if (sysex_started)
-	// 	return true;
-
-	// if (midirx_status_is_cmd(status, MIDI_STAT_SYSEX))
-	// {
-	// 	sysex_started = true;
-	// 	return true;
-	// }
-
-	// if (midirx_status_is_cmd(status, MIDI_STAT_NOTE_ON) ||
-	//     midirx_status_is_cmd(status, MIDI_STAT_NOTE_OFF))
-	// {
-	// 	return true;
-	// }
-
-	// return false;
-
-	return true;
+	return false;
 }
 
 void handle_midi_msg(midi_msg_t *msg)
