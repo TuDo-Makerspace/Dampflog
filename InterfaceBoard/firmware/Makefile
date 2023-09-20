@@ -40,7 +40,6 @@
 #	↳ toolchain_stm8flash
 #	↳ toolchain_sdccrm
 
-
 # Meta
 
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -66,7 +65,13 @@ CP         := cp
 
 # Build flags
 BUILD_TARGET_DEVICE   := STM8S103                # Specify the target device here! (See stm8s.h for available devices)
-DEFINES               := -D$(BUILD_TARGET_DEVICE) -DSYSEX_ENABLED -DMAX_SYSEX_LEN=10 -DF_CPU=16000000UL -DDEBUG
+DEFINES               := -D$(BUILD_TARGET_DEVICE)
+
+# Debug
+ifeq ($(DEBUG),1)
+DEFINES			+= -DDEBUG -DSYSEX_ENABLED -DMAX_SYSEX_LEN=10
+endif
+
 
 # Object files directory and extension
 OBJ       := ./build
