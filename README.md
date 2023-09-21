@@ -8,17 +8,17 @@ A synthesizer built from an [old Conrad Train whistle PCB](docs/DLP_Manual.pdf)!
 
 ### Product Description
 
-The "Dampflockpfeife" (Product ID. 19 77 77) is a Printed Circuit Board that was published by conrad in 1997 as a DIY soldering set for model train enthusiasts.
-It attempts to mimic the sound of a steam locomotive whistle upon "triggering". The intended use is to likely be installed in a model train track and be triggered by a passing train. The PCB contains two potentiometers: One for the pitch and one for the whistle duration. To trigger the sound, two contacts on the PCB need to be shorted (ex. via some button or sensor).
+The "Dampflockpfeife" (Product ID. 19 77 77) is a Printed Circuit Board that was published by Conrad Electronics in 1997 as a DIY soldering set for model train enthusiasts. It attempts to mimic the sound of a steam locomotive whistle when activated. The circuit board is intended to be integrated into a model train track setup, where it can be activated in response to a passing train. To adjust the whistle sound, the PCB features two potentiometers—one for adjusting the pitch and another for setting the duration of the whistle blast. Activating the sound requires short-circuiting two contacts on the PCB, which can be achieved, for example, by employing a button or a sensor mechanism.
 
 Here's a showcase of how the Whistle sounds:
 
 INSERT VIDEO HERE
 
+As you can hear, it does somewhat resemble a steam locomotive whistle, albeit rather poorly. That being said, a digital solution at the time would likely have been signficantly more expensive.
+
 ### The Circuit
 
-Given the time of publication, it shouldn't come as a suprise that the circuit contains no digital components. The whistle sound is synthesized completely anagously.
-Thankfully the manual of the PCB is freely available online (see [docs/DLP_Manual.pdf](docs/DLP_Manual.pdf)) and contains everything from a circuit description to a full schematic and even a PCB layout. Obviously the manual is in German, but no worries, the circuit will also be covered here!
+Given its publication date, it should not come as a surprise that this circuit is devoid of any digital components. The whistle sound is synthesized entirely through analog means. Fortunately, the PCB's manual is, despite its age, [readily accessible online](docs/DLP_Manual.pdf). It comprises a comprehensive resource, encompassing a circuit description, a complete schematic, and even a PCB layout. While the manual is in German, fear not, as we will provide a comprehensive coverage of the circuit here.
 
 Here's the schematic of the circuit:
 ![Schematic](docs/schematic.png)
@@ -37,42 +37,47 @@ Here's a block diagram of the circuit:
 
 ![Power stage](docs/power_stage.png)
 
-I found it a little odd, but the circuit takes a AC voltage as input. I suppose this was chosen to be compatible with "Märklin" model train tracks, which unlike their
-competitors use AC voltage. Sources claim this voltage ranges from 16 to 24V. I am no expert in model trains, however I did coincidentally come in contact someone who knew a thing or two about model trains and they explained me that the whole AC voltage thing is a quirk of Märklin.
+I found it somewhat peculiar that the circuit operates on AC voltage as its input. It appears this choice was made to ensure compatibility with "Märklin" model train tracks, which, in contrast to their competitors, rely on AC voltage. According to various sources, this voltage typically falls within the range of 16 to 24 volts. While I'm no expert in model trains, I did have the fortunate opportunity to recently talk with someone knowledgeable in the field. They explained me that this unique reliance on AC voltage is a rather quirky characteristic of Märklin model trains.
 
-Anyways, back to the circuit. The AC voltage is rectified by a full bridge rectifier (D1-D4) and then filtered by a 100uF capacitor (C12). The smoothed voltage is then regulted down to 12V by a 7812 linear regulator (IC1). The 12V are then used to power the rest of the circuit.
+Now, returning to the circuit itself: the AC voltage first passes through a full bridge rectifier (D1-D4) to convert it into a pulsating DC signal. Subsequently, this signal is smoothed out by a 100uF capacitor (C12). The stabilized voltage is then further regulated down to a consistent 12 volts via a 7812 linear regulator (IC1). This 12-volt output is then used as the supply voltage to power the remaining components of the circuit.
 
-For my intents and purposes, the whole power section was not needed. I simply used a 12V DC power supply and connected it directly to the 12V rail.
+For my intents and purposes the whole power section was not needed. Instead, I simply used a 12V DC power supply and connected it directly to the 12V rail.
 
 #### 2. Trigger/Gate circuit
 
-One symbol in the schematic that quickly caught my attention was the NE555 timer IC. Initially I assumed that it is responsible for the tone generation, however it is actually operated in [monostable/one-shot mode](https://fulmanski.pl/tutorials/electronics/introduction/555-2/#basic_example_monostable) to generate a temporary gate signal. The gate signal is used to trigger the oscillator and amplifier. Its duration is configured by the potentiometer P2. The duration can range anywhere from 1 - 10 seconds depending on the potentiometer setting. To trigger the gate signal, the switch marked with the text "Start" must be closed which will
-pull down the trigger input of the NE555. This will cause the NE555 to output a high signal for the configured duration at the output pin 3, which in return forward biases the transistor T3. Since the collector of T3 is connected to the base of T2, T2 will will now be reverse biased. By default, T2 is forward biased by the pull-up resistor R4, which pulls the feedback path of the Oscillotr to low and thus prevents it from outputting a tone. When T2 is reverse biased, the feedback path is no longer pulled down and the oscillator is free to oscillate and thus synthesize a tone.
+As I delved into the schematic, one symbol immediately captured my attention: the NE555 timer IC. At first glance, I presumed it might be responsible for generating the tone itself, but I quickly discovered that it operates in monostable/one-shot mode to generate a temporary gate signal. This gate signal serves as the trigger the oscillator. Its duration is adjustable via potentiometer P2, allowing for a range spanning 1 to 10 seconds based on the potentiometer's setting.
+
+To initiate the gate signal, one must close the switch labeled "Start," which in turn pulls down the trigger input of the NE555. This action prompts the NE555 to produce a high signal at output pin 3, sustaining it for the preconfigured duration. This signal subsequently forward-biases transistor T3. Since the collector of T3 is connected to the base of T2, T2 is reverse-biased as a result. If no gate signal is present (ie. by default), T2 is forward-biased via the pull-up resistor R4, which keeps the feedback path of the oscillator grounded, preventing it from generating any tone. With T2 in a reverse-biased state, the feedback path is no longer held down, enabling the oscillator to oscillate freely and synthesize the desired tone.
 
 #### 3. Oscillator
 
-The oscillator is the heart of the circuit and hence perhaps also the most complex part of the circuit. It somewhat resembles an OP-AMP (In this case an LM741) relaxation oscillator with a couple of quirks. Firstly, the positive feedback path is AC coupled via C1, and C2. Secondly, and this is what makes the circuit so interesting, the feedback path contains an NPN transistor T1 which is configured in a very atypical and quirky way, that is in diode configuration with it's emitter attached to the more positive rail, to feed noise into the feedback path. If that wasn't odd enough, the op-amp output is also coupled to the "Offset Null" pin of the op-amp via capacitor C7. The purpose of the transistor T1, as well as the Offset Null feedback is to induce noise into the feedback path by causing slight shifts in the oscillators frequency. This is what gives the circuit its characteristic "steam locomotive" sound. As mentioned, the rest of the circuit resembles am OP-AMP relaxation oscillator. The frequency of the oscillator can be adjusted via the potentiometer P1 which pulls down the propagated through the positive feedback path. On the inverting input of the OP-AMP, a triangle wave is formed due to the RC circuit formed by R8 and C6. The smaller the resistance of P1, the lower the voltage that is propagated through the positive feedback path. This in turn means the triangle wave at the non-inverting input can "catch up" the voltage at the inverting input faster, which in turn increases the frequency of the oscillator. At some resistance, P1, the porpagated voltage is so low enouhg that the oscillation stabilizes. During this
-operation, only the sound generated by the noise feedback path is audible, which can only be described as eery and perhaps even a little creepy. A recording of this sound can be found [here](https://soundcloud.com/user-631734174/bc548-diode-configuration-noise). Another interesting side effect of stabilizing the oscillator is that it experiences hysteriesys due to it's schmitt-trigger like positive feedback. As a result, the potentiometer P1 must be turned a futher back to restart the oscillation.
-In total, this oscillator offers a frequency range of approximately 116Hz (inf resistance) to 700Hz (point of stabilization). That's about 2.5 octaves of range (A#2 - F5).
+Within this circuit, the oscillator assumes the role of its pulsating core, arguably the most important part of the entire circuit. It somewhat resembles a relaxation oscillator built around an LM741 operational amplifier (OP-AMP), albeit with a distinct set of quirks that give it its unique character.
 
-Below are a couple of screenshots of LTSpice simulations to
-illustrate the behaviour of the oscillator.
+Firstly, the positive feedback loop takes an unusual turn as it's AC-coupled via capacitors C1 and C2. Further, what sets this oscillator apart and makes it particularly fascinating, is the inclusion of an NPN transistor, T1 within the feedback path. This transistor operates in a rather atypical diode configuration, with its emitter connected to the more positive rail. Its role? To introduce a subtle touch of chaos by injecting noise into the feedback path. But wait, there's more. The op-amp's output is also coupled to the "Offset Null" pin via capacitor C7, further contributing to the circuit's distinctive noisy sound. The noise injected into the feedback path causes subtle changes in the oscillator's frequency. This is precisely what gives this PCB its steam locomotive" sound. The rest of the circuit aligns more closely with a standard OP-AMP relaxation oscillator.
+
+The frequency of this oscillator is adjustable, thanks to potentiometer P1, which defines the voltage propagated through the positive feedback pathway. On the inverting input of the OP-AMP, an RC circuit formed by R8 and C6 generates a triangular waveform. When P1's resistance decreases, the voltage in the positive feedback path decreases as well. Consequently, the triangular wave at the non-inverting input catches up to the inverting input faster, escalating the oscillator's frequency. When P1 reaches a low-enough resistance, the propagated voltage drops sufficiently low to stabilize the oscillation. In this state, only the eerie and somewhat spooky sound produced by the noise feedback path remains audible. You can listen to a recording of this peculiar sound [here](https://soundcloud.com/user-631734174/bc548-diode-configuration-noise).
+
+An interesting side effect of this stabilization is that the oscillator experiences hysteriesys due to it's schmitt-trigger like positive feedback. Consequently, P1 must be turned further back to retrigger the oscillation.
+
+In total, the oscillator offers a frequency spectrum spanning approximately 116Hz (at infinite resistance) to 700Hz (at the point of stabilization). This equates to roughly 2.5 octaves of range, covering pitches from A#2 to F5.
+
+Below are a couple of screenshots of LTSpice simulations to further illustrate the behaviour of the oscillator.
 
 LT SPICE STUFF HERE
 
-One thing that is very important to know is that the frequency vs P1 behaivour experiences a rather inverse multiplicative behaviour. At low resistances (high frequencies), the frequency experiences very fast changes with small changes in P1. At high resistances (low frequencies), the frequency experiences very slow changes with small changes in P1. For well-tampered pitch, this behaivour should be exponential and as we'll see this was a major issue later when attempting to implement 1V/Octave pitch control.
+A crucial aspect of this circuit: The relationship between frequency and the potentiometer P1 follows an inversely multiplicative response. At lower resistances (corresponding to higher frequencies), even slight adjustments to P1 produce rapid frequency shifts. In contrast, at higher resistances (corresponding to lower frequencies), making similar changes to P1 yields only slight changes in frequency. Ideally, for precise pitch control, we would expect this behavior to be exponential. This characteristic became a significant challenge when attempting to implement 1V/Octave pitch control, as we will explore later.
 
-Another interesting property of the LM741 is that higher frequencies experience a low-pass behaivour. In lower frequencies we get a more square-ish output, in higher
-frequencies we get a more triangle-ish output. This is likely due to the slew rate of the LM741 and actually adds some nice character to the sound.
+GRAPH HERE
+
+Additionally, the LM741 exhibits an intersting trait: At higher frequencies, it exhibits a low-pass filtering effect. Lower frequencies result in a more square-like output, while higher frequencies manifest as a more triangular waveform. This phenomenon can be attributed to the slew rate of the LM741, and it controbutes to a distinctive and appealing character to the resulting sound.
 
 #### 4. Output Stage/Amplifier
 
-Truth be told, I am not an expert regarding transistor amplifiers and since the output stage is not really relevant for my project I have not even attempted to
-inspect it in more detail. I'm not entirely sure, but I assume T4 and T5 are there to amplify the voltage of the signal and the complementary push pull amplifier formed by T7 and T6 buffer the current? Please correct me if I'm wrong.
+To be honest, I don't possess enough experience in the field of transistor amplifiers, and given that the output stage doesn't directly pertain to my project's objectives, I haven't really delved deeply into its functionality. I have a vague suspicion that T4 and T5 might play a role in amplifying the signal voltage, while the complementary push-pull amplifier comprising T7 and T6 might be responsible for current buffering. However, as mentioned, I'm not entirely certain so I welcome any corrections or clarifications if I'm off the mark.
 
 ## Hacking the PCB
 
-After analyzing the circuit it was time to turn the PCB into a synthesizer. Before grabbing my soldering iron I had to think about what features I wanted to add to the PCB to turn it into a synthesizer. Here was my initial list of requirements:
+After thoroughly examining the circuit, it was time to transform the PCB into a fully-fledged synthesizer. Before I could wield my trusty soldering iron, I needed to formulate a roadmap of the features I wanted to "hack" into the PCB. Here's my initial list of requirements:
 
 - 12V DC Power Input
 - 3.5mm Jack audio output with volume control
@@ -80,33 +85,37 @@ After analyzing the circuit it was time to turn the PCB into a synthesizer. Befo
 - A 0-5V Gate input to trigger the gate signal
 - A 1V/Octave CV input to control the pitch
 
-In addition to these features, I also wanted to ensure that the device could still be operated in it's original inteded way. For that I ensured to add a push button to trigger the gate signal, as well as a potentiometer to control the duration of the gate signal and a potentiometer to manually control the pitch.
+Beyond these additions, I wanted to ensure that the device retained its original functionality. To achieve this, I included a push-button for manual gate signal triggering, along with potentiometers to adjust the gate signal duration and pitch manually.
 
-To house the PCB I used an old metal box that used to contain a [data transfer switch (KVM Switch)](https://www.amazon.com/Kentek-Parallel-Peripherals-Devices-Printer/dp/B07KWRWLRN) which we had lying around in the makerspace. Under typical circumstances I would have probably just 3D printed an enclosure, however, as mentioned earlier, this project was created during a Makerthon, so I simply didn't have the time to design and print an enclosure. I also gave the enclosure a cute little
-spray paint job just for the fun of it.
+For housing the PCB, I repurposed an old metal box that had once contained a [data transfer switch (KVM Switch)](https://www.amazon.com/Kentek-Parallel-Peripherals-Devices-Printer/dp/B07KWRWLRN)—which we happened to have lying around in the makerspace. Typically, I would have opted for a 3D-printed enclosure, but as mentioned earlier, this project was created during a Makerthon, and I simply didn't have the luxury of time for enclosure design and printing. As a playful touch, I even gave the enclosure a neat little spray-paint job, just for the fun of it.
 
 ### Power Input
 
-Adding a 12V DC power input was rather trivial. I simply soldered a 2.1mm DC barrel jack to the 12V rail of the PCB with a switch in between to turn the device on and off. I also added a small red power LED next to the Jack to indicate that the device is powered on. I tried to solder the power wires as close to the power stage as possible to maximize use of the power capacitors on the PCB. The jack is mounted on the front side of the enclosure and the switch is mounted on the back side of the enclosure. In hindsight, I should have probably swapped the positions of the jack and the switch, since it would have made the device more ergonomic to use. However I only considered adding the switch after I had mounted the jack in place.
+Adding a 12V DC power input was rather trivial. I simply soldered a 2.1mm DC barrel jack to the 12V rail of the PCB with a switch in between to turn the device on and off. I also added a small red power LED next to the Jack to indicate that the device is powered on.
+
+I tried to solder the power wires as close to the power stage as possible to maximize the utilization of the power capacitors on the PCB. The DC jack found its home on the front side of the enclosure, while the switch was thoughtfully situated on the back side.
+
+In hindsight, I realize that it might have been more ergonomically advantageous to swap the positions of the jack and the switch, a consideration that occurred to me after the jack was firmly in place.
 
 PICTURE OF JACK HERE
 
 ### Audio Output
 
-Adding audio output was quite straight forward. I simply soldered a 3.5mm audio jack to the output of the amplifier. I also added a potentiometer as voltage divider to control the volume of the output signal. The jack along with the potentiometer are mounted on the front side of the enclosure.
+Adding audio output was also pretty straight forward. I simply soldered a 3.5mm audio jack to the output of the amplifier. To provide volume control for the output signal, I introduced a potentiometer which serves as a voltage divider. These were mounted on the front side of the enclosure for easy accessibility.
 
 PICTURE OF AUDIO JACK HERE
 
 ### Original Controls
 
-As mentioned earlier, I wanted to ensure that the device could still be operated in it's original intended way. For that I ensured to add a large green arcade push button to trigger the gate signal, as well as a potentiometer to control the duration of the gate signal and a potentiometer to manually control the pitch. The push button is mounted on the top side of the enclosure and simply connected to the trigger input of the Monostable 555 as original Intended. The potentiometers to control pitch and duration are also mounted on the top side of the enclosure. For the pitch I've actually switched the 50k pot with a 200k pot to get a better range of pitch. 50K does not quite reach the lower frequency limits of the oscillator.
+As previously mentioned, it was essential to retain the device's original intended functionality. One addition was a green arcade-style push button mounted on the top side of the enclosure to serve as a trigger for the gate signal. I also mounted two potentiometers on the top side to control the duration of the gate signal and the pitch. It should be noted that I used a 200k pot instead the original inteded value of 50k. This modification expanded the available pitch range. A 50k pot couldn't quite reach the lower frequency limits of the oscillator.
 
 PICTURE OF ORIGINAL CONTROLS HERE
 
 ### HOLD Switch
 
-Adding a HOLD switch was perhaps the first not so trivial addition to the circuit. After some thinking I concluded that a switch in parallel to transistor T3 would do the trick best. When the switch is closed, it essentially has the same effect as if T3 was forward biased, which in turn means that T2 will reverse biased and the oscillator will always be enabled.
-The hold switch is mounted to the top right of the trigger button.
+Incorporating a HOLD switch proved to be the first slightly more complicated addition to the circuit. After careful consideration, I determined that a switch connected in parallel to transistor T3 would provide the most effective solution. When this switch is in the closed position, it essentially replicates the scenario where T3 is forward-biased. Consequently, this keeps T2 in a reverse-biased state, ensuring that the oscillator remains continually enabled.
+
+For user convenience, the HOLD switch has next to the trigger button.
 
 SCHEMATIC MOD
 
@@ -114,26 +123,26 @@ PICTURE OF HOLD SWITCH HERE
 
 ### Gate Input
 
-To add a GATE signal I simply took inspiration from the HOLD switch and added a 3.5mm jack connected to a NMOS transistor in parallel to T3. To ensure that the mosfet is always turned off when the jack is not connected, I added a 220k resistor between the gate and source of the mosfet. I also added a 10k resistor between the jack tip and the gate of the mosfet to increase the RC constant and thus ensure that accidental voltage spikes cannot fry the MOSFET (ex. when the jack cable is being plugged in).
+To introduce a GATE support, I drew inspiration from the design of the HOLD switch. I incorporated a 3.5mm jack, connected to an NMOS transistor positioned in parallel with T3. To guarantee that the MOSFET remains consistently off when the jack is not connected, I added a 220k Pull-Down resistor at the gate.
+
+Additionally, for added protection against accidental voltage spikes (e.g., during jack cable insertion), I integrated a 10k resistor between the jack tip and the MOSFET's gate. This arrangement effectively increases the RC constant (C being the MOSFETS capacitance), safeguarding the MOSFET from potential damage.
 
 SCHEMATIC MOD
 
 PICTURE OF GATE JACK HERE
 
-Without spoiling too much, the GATE input has been modified a little later on in the project.
+Without revealing too much ahead, I made some later modifications to the GATE input during the course of the project.
 
-To test out GATE support, I connected my trusty Arturia Keystep to the GATE input and realized that the oscillator isn't really ideal for GATE input, at least not in a traditional sense. See, the oscillator unfortunately has a slight attack duration and short decay time which means it takes a decent amount of time for it to reach its inteded pitch but quickly shuts of once the GATE signal is dropped. As a consequence, fast GATE signals don't give the oscillator enough time to reach its pitch and the tone just ends up getting "chopped". Thsi is largerly due to the fact that the oscillator relies on RC circuits which by intention take time to charge up. I thus found GATE to only be useful in two cases:
+To put the GATE support to the test, I connected my trusyworthy Arturia Keystep to the GATE input, only to discover that the oscillator isn't particularly well-suited for GATE input, at least not in the traditional sense. You see, the oscillator exhibits a slight attack duration and a rather brief decay time. This means it requires a significant amount of time to reach its intended pitch but quickly ceases once the GATE signal drops. Consequently, rapid GATE signals fail to give the oscillator adequate time to achieve its intended pitch, resulting in a somewhat "chopped" tone. This behavior is primarily attributed to the fact that the oscillator relies on RC circuits, which are intentionally designed to take time to charge up.
 
-1. When the BPM/tempo is slow enough to allow the oscillator to reach its intended pitch
-2. To crease a percussion-like choppy sound
+I still found the GATE input to be genuinely useful in only two scenarios:
 
-I actually found the second case to be a seriously cool unintended feature, especially when the oscillator is capped out so that only the noise in the feedback path is getting gated. It gives the device a really rough old-school industrial sound. A sample of how this can sound with a bit of distortion, reverb and flanging can be found [here](https://soundcloud.com/user-631734174/dampflog-gate-noise-test).
+    - When the BPM/tempo setting allows the oscillator sufficient time to attain its desired pitch.
+    - When creating a percussive, choppy sound effect.
 
-### Pitch Control
+Interestingly, I stumbled upon the second scenario as a seriously cool unintended feature. It particularly shines when the oscillator is pushed to its limits, allowing only the noise within the feedback path to be gated. This makes for a dirty, industrial screechy sound which is great for harsher techno tracks. You can explore a sample of this distinctive sound, enhanced with a touch of distortion, reverb, and flanging, by [clicking here](https://soundcloud.com/user-631734174/dampflog-gate-noise-test).
 
-Let me start of by warning you that Pitch control was by far the most difficult part of this project. Hence, this chapter developed into quite the rabbit hole.
-
-#### Initial Approach
+#### Pitch Control - Initial Approach
 
 To at least deliver a proof of concept for the end of the Makerthon I had to at least implement some form of half-arsed pitch control. For the sake of demonstration I
 disattached the Pitch potentiometer P1 and soldered in a generic Jellybean transistor in place. Then I added a 3.5mm jack for a CV input and simply soldered it with a
@@ -144,60 +153,66 @@ INITIAL DEMONSTRATION
 
 #### Time to get serious
 
-Enter weeks of Pitch controll brain rot. You see, prior to starting this project, I wasn't really that experienced with analog operation of transistors. It also certainly didn't help that I was completely on my own when it came to implementing 1V/Oct pitch control on a circuit that was never intedded to be operated in such way.
-After a bit of clueless experimentation with transistors I quickly learned that I can't skip my way past understanding transistors If I want to get this thing to speak bloody 1V/Oct. Fast forward a couple of weeks and I had watched over 40 hours of electronic circuits lectures by Prof. Behzad Razavi from University of California in Los Angeles. I cannot stress how great their lectures are, as they've provied a signficantly better and more in-depth overview of transistors than my Universities Electronic Circuit course has. After watching 30 some lectures I felt like I had gathered enough knowledge to take an educated approach at solving the pitch control problem.
+Implementing pitch control became a weeks-long journey. By the end I had suffered from serious circuit design brain-rot. Prior to working on this project, my experience with analog operation of transistors was somewhat limited. This was further complicated by the the fact that to implement 1V/Oct pitch control in a circuit that was never originally designed for such a purpose. I also wanted to avoid altering the original circuit as much as possible.
 
-First, I took a look at how some VCO's implement 1V/Oct pitch. Typically the approach is to exponentialize the linear signal using a transistor. The signal needs to be exponentialized because humans perceive pitch exponentially. In the case of the equal-tampered scale, the frequency for notes grows exponentially by the twelth root of 2. Obviously there's a little more to the implementation than just slapping a transistor after the base. There's typically also going to be circuitry to calibrate the gain, scale and the base note but I won't haunt you with all the details as this approach unfortunately cannot be applied directly applied to the oscillator.
+After some initial, albeit clueless experimentation with transistors, it became very clear that I couldn't sidestep a deeper understanding of these components if I wanted to achieve precise 1V/Oct control. Fast forward a few weeks, and I had consumed over 40 hours of electronic circuits lectures delivered by Prof. Behzad Razavi from the University of California in Los Angeles, which are freely available online. I can't emphasize enough how invaluable these lectures were, providing a significantly more comprehensive and insightful overview of transistors compared to my university's electronic circuit course. After absorbing a substantial amount of knowledge from these lectures, I felt ready to take a more educated approach to solve the pitch control conundrum.
 
-See, the problem with our oscialltor is that it experiences inverse-multiplicative growth, that is, something along the form of `a * 1/x + b`. We can see this in the following graph which displays the frequency of the oscillator in relation to the resistance of the pitch potentiometer P1:
+First, I examined how some Voltage-Controlled Oscillators (VCOs) implement 1V/Oct pitch control. Typically, this involves exponentializing a linear signal using a transistor. This exponentialization is necessary because human perception of pitch is inherently exponential. In the equal-tempered scale, for instance, the frequency of notes increases exponentially by the twelfth root of 2. Of course, the implementation goes beyond simply connecting a transistor's base to the 1V/Oct input; it typically includes circuitry for gain calibration, scaling, and base note adjustment. However, these details need not haunt us, as this approach cannot be directly applied to our oscillator anyaways.
+
+Here's the crux of the issue: our oscillator exhibits inverse-multiplicative growth, something akin to the form a * 1/x + b. 
 
 GRAPH HERE
 
-This sucks, because this is neither linear nor exponential. If the response was linear, we could simply exponentiaze it with a transistor and get it to speak 1V/Oct.
-If it were already exponential, we could also use a transistor and supress the gain to the point where it behaves nearly linearly (ie. like a voltage controlled resistor). An inverse multiplicative response leaves us in an akward zone where it sorta behaves like an exponential function, in that low frequencies experience a slow rate of change and high frequencies experience a fast rate of change, but it's not quite exponential. To see how inaccurate the response is, I decided to build a little test circuit with a transistor approximately operating as a voltage controlled resistor. To achieved this, I chose a very large base resistor (about 5M in this case) which supresses the gain of the transistor to the point where its beta value and base resistor dominate the gain. This conclusion came after perfoming a small signal analysis of the transistor and oscillator as shown below:
+This response is neither linear nor exponential. If it were linear, we could simply use a transistor to exponentialize it and achieve 1V/Oct pitch control. If it were already exponential, we could use a transistor with suppress the gain, essentially operating it nearly linear (akin to a voltage-controlled resistor). Unfortunately, our response falls into an awkward zone where it somewhat behaves like an exponential function but now quite. Yes, Low frequencies experience a slow rate of change, and high frequencies experience a rapid rate of change, but it's not quite exponential. To test the extent of this inaccuracy, I decided to construct a test circuit with a transistor that roughly operated as a voltage-controlled resistor. To achieve this, I selected an extraordinarily large base resistor (around 5M in this case) to suppress the transistor's gain to the point where its beta value and base resistor dominated the gain. This conclusion was reached following a small signal analysis of the transistor and oscillator, as illustrated below:
 
 SMALL SIGNAL ANALYSIS HERE
 
-Then it was time to sweep the transistor's base voltage using a function generator and measure the frequency of the oscillator. The result was unexpectedly disappointing. As expcted, the response is inversely multiplicative, except for high frequencies where the oscillator dies.
+The next step involved sweeping the transistor's base voltage using a function generator and measuring the oscillator's frequency. The outcome was predictably disappointing. As anticipated, the response exhibited inverse-multiplicative behavior, with the oscillator stabilizing at high frequencies:
 
 INSERT GRAPH
 
-If we analyze the output for note intercepts we can see that the response only approximates exponential pitch in a very narrow region. If we plot the distances between each note intercept, this becomes even more so apparent:
+Upon analyzing the output for note intercepts, it became apparent that the response only approximates exponential pitch within an exceedingly narrow range. If we plot the distances between each note intercept, this discrepancy becomes even more pronounced.
 
 INSERT GRAPH
 
 INSERT GRAPH
 
-I event went as far to create a 1V/Oct scaling circuit to connect my keystep and while I got rather linear behaivour in the 4th octave, which corresponds to the "sweet spot" where the inverse multiplicative is most similar to the exponential pitch function, leaving the octave quickly resulted in a very out of tune frequency. This is because the deviation significantly increases the further we move away from the "sweet spot".
+I went so far as to construct a 1V/Oct scaling circuit to connect my Keystep keyboard. While I achieved reasonably linear behavior in the fourth octave (corresponding to the "sweet spot" where the inverse-multiplicative function is most similar to the exponential pitch function), venturing beyond the octave swiftly resulted in severely out-of-tune frequencies. This deviation escalated significantly the further we moved away from this "sweet spot."
 
 SHOWCASE
 
 #### Screw CV, we're going full MIDI
 
-At this point I realized that an analog solution to compensate for the inverse multiplicative behaivour would simply not be worth the effort. Now, perhaps I sould mention at this point that I'm a computer engineering undergrad. Now... I feel as a computer engineer there's almost a certain obligation to provoke electrical engineers by solving lots of issues with code instead of electronics. Sorry for triggering al EE's that are reading this. Jokes aside, it really did seems like the easiest and most plausible solution here was to work with a microcontroller, and most imporantly a DAC. And since we're already going digital here, we might as well switch to a digital alternative to control pitch, that is, MIDI.
+At this point, it dawned on me that trying to tackle the inverse-multiplicative quirk with analog wizardry just wasn't worth the headache. I should probably mention that I'm currently pursuing a degree in computer engineering. Now, you know how it is – us computer engineers often enjoy poking fun at electrical engineers by solving problems with lines of code instead of soldering irons. Jokes aside, in all seriousness, it seemed like the easiest and most practical solution here was to go digital, and more specifically, to embrace the wonders of microcontrollers and DACs. And if we're making the digital leap, why not go all the way and swap out CV with MIDI?
 
-The concept is rather simple, the MCU receives MIDI via a MIDI port, that in turn is then converted to a DAC value using a look-up table, which then in turn controls a transistor in the Oscillators feedback path. Now we don't have to care about how exponential or linear the Oscillator operates, we simply need to tell the MCU which note corresponds to which DAC value to output the correct frequency. We will also want to keep the gain supression of the transistor to gain resolution. What's important is that the gain is still large enough to reach the full frequency range of the oscillator with MCU's and DAC's supply voltage. For the DAC I chose an MCP4921 which gives me 12-bits of resolution and an external reference voltage to really make the most out of it. This turned out to be more than enough accurately map MIDI to the oscillator's frequency range, and that's despite loosing about 3/4th of the DAC range due to not biasing its output to the operating range.
+The idea is pretty straightforward: the MCU receives MIDI signals via a MIDI port, then converts them into DAC values using a handy lookup table. These DAC values, in turn, dictate the behavior of a transistor nestled within the oscillator's feedback path. Now, we no longer need to fuss about the intricacies of whether the oscillator operates linearly or exponentially. All we have to do is tell the MCU which note corresponds to which DAC value, and presto – we've got the right frequency.
+
+With a DAC, it's still important to maintain control over the transistor's gain suppression while ensuring that the gain remains substantial enough to cover the oscillator's full frequency range with the MCU's and DAC's supply voltage limits. For the DAC, I opted for an MCP4921, which has 12 bits of resolution and the convenience of an external reference voltage. This choice proved more than adequate for accurately mapping MIDI data to the oscillator's frequency range, and that despite loosing a portion of the DAC range due to the absence of biasing its output to the operating range of the transistor.
 
 #### A PCB to rule them all
 
-To implement a digital interface to control the Dampflog, it quickly became apparent that a PCB would be needed. I thus designed a PCB that contains MIDI circuitry, an STM8S devboard, a DAC and a couple of other nice features such as a GATE output and portamento. The GATE output allows us to control GATE via MIDI. I also added some switches to toggle between manual oscillator operation and digital operation. For GATE I've simply ANDed the MCUs GPIO output with the analog GATE jack that I have implemented previously.
+In order to create a digital interface for controlling the Dampflog, it became evident that a PCB would be practical for the task. Consequently, I proceeded to designing a PCB that incorporates various key elements, including MIDI circuitry, an STM8S development board as MCU, a DAC, and a couple of additional features like a GATE output and portamento functionality. The GATE output, for instance, allows for MIDI-based GATE control. Additionally, I integrated switches to transition between manual oscillator operation and digital control. For the GATE function, I simply applied an AND logic operation to the MCU's GPIO output and the previously implemented analog GATE jack. This spared me from having to add another switch, which would convolute the device even more.
 
 INSERT SCHEMATIC
 
 INSERT PCB
 
-If we expand the block diagram with the interface board from the beginning of the document, it now looks something like this:
+Expand the initial block diagram with the interface board, we get:
 
 INSERT BLOCK DIAGRAM
 
-I designed the PCB to fit on a single layer board so that I could etch it myself. In hinsight I was way too naive with the clearances which ended up causing quite a few issues while etching it (traces shorting etc.). Altough a bit hacky, the PCB did end up working just fine in the end.
+It's worth noting that I designed the PCB to fit within a single layer, allowing for in-house etching. However, in retrospect I was rather naive about the clearances, leading to some challenges during the etching process (e.g., trace so close they ended up shorting). Despite these hiccups, the PCB eventually performed its intended function.
 
-Now... I wont cover further details of the interface board here, as it is deserves a README on its own and is explicitly covered in the README file of the InterfaceBoard directory. There I also cover the firmware of the MCU.
+Now, I won't delve into further details of the interface board in here, as it deserves a dedicated README document of its own. You can find comprehensive coverage of the interface board, including insights into the MCU's firmware, in the README file within the InterfaceBoard directory.
 
 ## The Result
 
 I am now left with a MIDI controllable steam locomotive whistle synth. I find it rather humerous to imagine that somebody bought this thing for their model train tracks and more than 20 years later somone is cranking out the dirties screaching techno sound with it. Truth be told, this thing has no right to be so ridiciously over-engineered, especially considering that it has a pretty narrow frequency range and really doesn't sound THAT impressive! That being said, this was a ridiciously fun project and I have learned more about transistors that in my last 4 years for studying! I also learned a lot about pitch scaling, data and signal analysis and how to use DACs.
 
+So, what I've got here is a steam locomotive whistle synth that's grooving to the MIDI rhythms. It's kinda hilarious to think that someone originally snagged this thing for their model train setup, and now, more than two decades later, it's belting out some seriously gritty techno tunes.
+
+Let's be real, this thing has no business being so absurdly over-engineered, especially when you consider its somewhat limited frequency range and the fact that it probably won't exactly blow your mind with its sound. But that doesn't matter because this project was an absolute blast! I learned more about transistors in a few months than I did in my entire four years of studying! Plus, I dove headfirst into the world of pitch scaling, data analysis, signal wizardry, and the art of wrangling DACs. Now that's something!
+
 ## Future plans
 
-For now I'm just really happy to be done with this project. Don't get me wrong, it's been lots of fun, but right now I just wanna jam out with it and make some music. That being said, I might cook up a standalone synth or a eurorack module that utilizes a stripped down version of the train whistle PCB but offers multiple voices (ie. multiple oscilators). This should be rather easy to achieve as the majority of ICs required for this task come in dual and/or quad packages.
+Right now, I'm just happy to call this project a wrap. Don't get me wrong, it's been lot's of fun, but honestly, at this point I just want to crank it up and start making some music. That said, I've got some ideas brewing in the back of my mind. I'm thinking about cooking up a standalone synth or maybe even diving into the world of eurorack modules with this thing. I'd essentially take a stripped-down version of the train whistle PCB and give it multiple voices by using multiple oscillators instead of just one. It should be a pretty straightforward endeavor since most of the ICs I'd need for this task come in dual and/or quad packages.
