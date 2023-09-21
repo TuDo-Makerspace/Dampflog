@@ -1,8 +1,30 @@
-# Dampflog
+# Dampflog <!-- omit in toc -->
 
 ![Showcase]()
 
 A synthesizer built from an [old Conrad Train whistle PCB](docs/DLP_Manual.pdf)! This project was created during the [TU-DO Makerspace's Makerthon #1](https://www.instagram.com/p/CwGRmoHKHiY/?igshid=MzRlODBiNWFlZA==).
+
+# Table Of Contents <!-- omit in toc -->
+- ["Dampflockpfeife" - The Steam Locomotive Whistle](#dampflockpfeife---the-steam-locomotive-whistle)
+	- [Product Description](#product-description)
+	- [The Circuit](#the-circuit)
+		- [1. Power stage](#1-power-stage)
+		- [2. Trigger/Gate circuit](#2-triggergate-circuit)
+		- [3. Oscillator](#3-oscillator)
+		- [4. Output Stage/Amplifier](#4-output-stageamplifier)
+- [Hacking the PCB](#hacking-the-pcb)
+	- [Power Input](#power-input)
+	- [Audio Output](#audio-output)
+	- [Original Controls](#original-controls)
+	- [HOLD Switch](#hold-switch)
+	- [Gate Input](#gate-input)
+		- [Pitch Control - Initial Approach](#pitch-control---initial-approach)
+		- [Time to get serious](#time-to-get-serious)
+		- [Screw CV, we're going full MIDI](#screw-cv-were-going-full-midi)
+		- [A PCB to rule them all](#a-pcb-to-rule-them-all)
+- [The Result](#the-result)
+- [Future plans](#future-plans)
+
 
 ## "Dampflockpfeife" - The Steam Locomotive Whistle
 
