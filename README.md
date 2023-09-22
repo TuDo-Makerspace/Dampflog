@@ -112,7 +112,9 @@ To be honest, I don't possess enough experience in the field of transistor ampli
 
 Before discussing the modifications I made to the circuit board, I'd like to provide some context for this project. This project was born out of a Hackathon organized at our Makerspace, called "Makerthon". The theme, albeit not mandatory, was to "Upcycle" old electronics that we had lying around in the Makerspace. The time frame for the Hackathon was about two and a half days.
 
-![Makerthon](docs/MakerthonPoster.png)
+<p align="center">
+<img src="docs/MakerthonPoster.png" height=600px>
+</p>
 
 During the first day the task was to scavange for old electronics and brainstorm ideas for potential projects. After digging through an old box of PCBs I stumbled upon the Dampflog PCB. From there, it didn't take long to find the manual online and jump to the idea of turning this thing into a musical synthesizer!
 
