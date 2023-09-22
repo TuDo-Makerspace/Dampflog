@@ -30,6 +30,10 @@ A synthesizer built from an [old Conrad Train whistle PCB](docs/DLP_Manual.pdf)
 
 ## "Dampflockpfeife" - The Steam Locomotive Whistle
 
+![PCB](docs/PCBShowcase.jpg)
+
+> Pardon the crude picture, I unfortunately didn't take any pictures of the PCB before I started hacking it.
+
 ### Product Description
 
 The "Dampflockpfeife" is a [Printed Circuit Board that was published by Conrad Electronics in 1997 as a DIY soldering set for model train enthusiasts](docs/DLP_Manual.pdf). It attempts to mimic the sound of a steam locomotive whistle when activated. The circuit board is intended to be integrated into a model train track setup, where it can be activated in response to a passing train. To adjust the whistle sound, the PCB features two potentiometers — one for adjusting the pitch and another for setting the duration of the whistle blast. Activating the sound requires short-circuiting two contacts on the PCB, which can be achieved, for example, by employing a button or a sensor mechanism.
