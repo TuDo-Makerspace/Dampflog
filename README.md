@@ -201,7 +201,7 @@ To at least deliver a proof of concept for the end of the Makerthon I had to at 
 disattached the Pitch potentiometer P1 and soldered in a generic Jellybean transistor in place. Then I added a 3.5mm jack for a CV input and simply soldered it with a
 voltage divider and rather large base resistor to the transistors base until I got a somewhat usable range of pitch. Obiously the scale was completely out of tune and far from linear, but It was enough to demonstrate that the thing can be used to produce melodies.
 
-INITIAL DEMONSTRATION
+https://github.com/TU-DO-Makerspace/Dampflog/assets/12089409/d06b69a9-8a2e-4bfc-8f98-e92429bd2175
 
 #### Time to get serious
 
