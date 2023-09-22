@@ -190,14 +190,13 @@ Interestingly, I stumbled upon the second scenario as a seriously cool unintende
 
 To at least deliver a proof of concept for the end of the Makerthon I had to at least implement some form of half-arsed pitch control. For the sake of demonstration I
 disattached the Pitch potentiometer P1 and soldered in a generic Jellybean transistor in place. Then I added a 3.5mm jack for a CV input and simply soldered it with a
-voltage divider and lather large base resistor to the transistors base until I got a somewhat usable range of pitch. Obiously the pitch range was completely out of tune
-and far from linear, but It was enough to demonstrate that the thing can be used to produce melodies.
+voltage divider and rather large base resistor to the transistors base until I got a somewhat usable range of pitch. Obiously the scale was completely out of tune and far from linear, but It was enough to demonstrate that the thing can be used to produce melodies.
 
 INITIAL DEMONSTRATION
 
 #### Time to get serious
 
-Implementing pitch control became a weeks-long journey. By the end I had suffered from serious circuit design brain-rot. Prior to working on this project, my experience with analog operation of transistors was somewhat limited. This was further complicated that I was attempting to implement 1V/Oct pitch control on a circuit that was never originally designed for such a purpose. I also wanted to avoid altering the original circuit as much as possible.
+Implementing pitch control became a weeks-long journey. By the end I had suffered from serious circuit design brain-rot. Prior to working on this project, my experience with analog operation of transistors was somewhat limited. This was further complicated by attempting to implement 1V/Oct pitch control on a circuit that was never originally designed for such a purpose. I also wanted to avoid altering the original circuit as much as possible.
 
 After some initial, albeit clueless experimentation with transistors, it became very clear that I couldn't sidestep a deeper understanding of these components if I wanted to achieve precise 1V/Oct control. Fast forward a few weeks, and I had consumed over 40 hours of electronic circuits lectures delivered by Prof. Behzad Razavi from the University of California in Los Angeles, which are freely available online. I can't emphasize enough how invaluable these lectures were, providing a significantly more comprehensive and insightful overview of transistors compared to my university's electronic circuit course. After absorbing a substantial amount of knowledge from these lectures, I felt ready to take a more educated approach to solve the pitch control conundrum.
 
