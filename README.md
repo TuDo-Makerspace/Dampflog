@@ -63,9 +63,9 @@ The circuit can be split into four parts:
 
 ![Power stage](docs/DLP_Schematic_Power.png)
 
-I initially found it somewhat peculiar that the circuit operates on AC voltage as its input. It appears this choice was made to ensure compatibility with "Märklin" model train tracks, which, in contrast to their competitors, rely on AC voltage. According to various sources, this voltage typically falls within the range of 16 to 24 volts. While I'm no expert in model trains, I did have the fortunate opportunity to recently talk with someone knowledgeable in the field. They explained me that this unique reliance on AC voltage is a rather quirky characteristic of Märklin model trains.
+On the first glance we can recognize a full bridge rectifier, indicating that the Circuit takes AC as an input. I initially found it somewhat peculiar but as I later found out, this choice was made to ensure compatibility with "Märklin" model train tracks, which, in contrast to their competitors, rely on AC voltage. According to various sources, this voltage typically falls within the range of 16 to 24 volts. While I'm no expert in model trains, I did have the fortunate opportunity to recently talk with someone knowledgeable in the field. They explained me that this unique reliance on AC voltage is a rather quirky characteristic of Märklin model trains.
 
-Now, returning to the circuit itself: the AC voltage first passes through a full bridge rectifier (D1-D4) to convert it into a pulsating DC signal. Subsequently, this signal is smoothed out by a 100uF capacitor (C12). The stabilized voltage is then further regulated down to a consistent 12 volts via a 7812 linear regulator (IC1). This 12-volt output is then used as the supply voltage to power the remaining components of the circuit.
+Now, returning to the circuit itself: As mentioned, the AC voltage first passes through a full bridge rectifier (D1-D4) to convert it into a pulsating DC signal. Subsequently, this signal is smoothed out by a 100uF capacitor (C12). The stabilized voltage is then further regulated down to a consistent 12 volts via a 7812 linear regulator (IC1). This 12-volt output is then used as the supply voltage to power the remaining components of the circuit.
 
 For my intents and purposes the whole power section was not needed. Instead, I simply used a 12V DC power supply and connected it directly to the 12V rail.
 
@@ -97,7 +97,7 @@ LT SPICE STUFF HERE
 
 A crucial aspect of this circuit: The relationship between frequency and the potentiometer P1 follows an inversely multiplicative response. At lower resistances (corresponding to higher frequencies), even slight adjustments to P1 produce rapid frequency shifts. In contrast, at higher resistances (corresponding to lower frequencies), making similar changes to P1 yields only slight changes in frequency. Ideally, for precise pitch control, we would expect this behavior to be exponential, not inverse multiplicative. This characteristic became a significant challenge when attempting to implement 1V/Octave pitch control, as we will explore later.
 
-GRAPH HERE
+![Frequency vs Resistance Response](docs/P1_FreqVSRes.png)
 
 Additionally, the LM741 exhibits an intersting trait: At higher frequencies, it exhibits a low-pass filtering effect. Lower frequencies result in a more square-like output, while higher frequencies manifest as a more triangular waveform. This phenomenon can likely be attributed to the slew rate of the LM741, and it controbutes to a distinctive and appealing character to the resulting sound.
 
@@ -125,6 +125,8 @@ For housing the PCB, I repurposed an old metal box that had once contained a [da
 
 Adding a 12V DC power input was rather trivial. I simply connected a 2.1mm DC barrel jack to the 12V rail of the PCB with a switch in between to turn the device on and off. I also added a small red power LED next to the Jack to indicate that the device is powered on.
 
+![12V](docs/12V.png)
+
 I tried to solder the power wires as close to the power stage as possible to maximize the utilization of the power capacitors on the PCB. The DC jack found its home on the front side of the enclosure, while the switch was thoughtfully situated on the back side.
 
 In hindsight, I realize that it might have been more ergonomically advantageous to swap the positions of the jack and the switch.
@@ -133,9 +135,19 @@ PICTURE OF JACK HERE
 
 ### Audio Output
 
-Adding audio output was also pretty straight forward. I simply connected a 3.5mm audio jack to the output of the amplifier. To provide volume control for the output signal, I introduced a potentiometer which serves as a voltage divider. These were mounted on the front side of the enclosure for easy accessibility.
+Adding audio output was also pretty straight forward. I simply connected a 3.5mm audio jack to the output of the amplifier. To provide volume control for the output signal, I introduced a potentiometer which serves as a voltage divider.
+
+![Audio](docs/AudioOut.png)
+
+The potentiometer and jack were mounted on the front side of the enclosure for easy accessibility.
 
 PICTURE OF AUDIO JACK HERE
+
+It's important to know that the output can reach up to 10VPP, which is **NOT** suitable for headphones. I recommend only
+using the device in combination with an audio interface or external amplifier. The volume should always be turned down first
+before connecting the device to an audio interface or amplifier.
+
+The advantage of such high peak-to-peak voltage is that it can be used to drive a speaker directly and can also interface easily with eurorack modules which also operate at similar voltage levels.
 
 ### Original Controls
 
@@ -147,9 +159,9 @@ PICTURE OF ORIGINAL CONTROLS HERE
 
 Incorporating a HOLD switch proved to be the first slightly more complicated addition to the circuit. After some consideration, I determined that a switch connected in parallel to transistor T3 would provide the most effective solution. When this switch is in the closed position, it essentially replicates the scenario where T3 is forward-biased. Consequently, this keeps T2 in a reverse-biased state, ensuring that the oscillator remains continually enabled.
 
-For user convenience, the HOLD switch has next to the trigger button.
+![HOLD](docs/HOLD.png)
 
-SCHEMATIC MOD
+For user convenience, the HOLD switch has been mounted next to the trigger button.
 
 PICTURE OF HOLD SWITCH HERE
 
@@ -159,7 +171,7 @@ To introduce a GATE support, I drew inspiration from the design of the HOLD swit
 
 Additionally, for added protection against accidental voltage spikes (e.g., during jack cable insertion), I integrated a 10k resistor between the jack tip and the MOSFET's gate. This arrangement effectively increases the RC constant (C being the MOSFETS capacitance), safeguarding the MOSFET from potential damage.
 
-SCHEMATIC MOD
+![GATE](docs/GATE.png)
 
 PICTURE OF GATE JACK HERE
 
@@ -193,7 +205,7 @@ First, I examined how some Voltage-Controlled Oscillators (VCOs) implement 1V/Oc
 
 Here's the crux of the issue: our oscillator exhibits inverse-multiplicative growth, something akin to the form a * 1/x + b. 
 
-GRAPH HERE
+![Frequency vs Resistance Response](docs/P1_FreqVSRes.png)
 
 This response is neither linear nor exponential. If it were linear, we could simply use a transistor to exponentialize it and achieve 1V/Oct pitch control. If it were already exponential, we could use a transistor with heavily supressed gain, thus operating it nearly lineary (akin to a voltage-controlled resistor). Unfortunately, the oscillator's response falls into an awkward zone where it somewhat behaves like an exponential function but not quite. Yes, Low frequencies experience a slow rate of change, and high frequencies experience a rapid rate of change, but it's still not quite exponential. To test the extent of this inaccuracy, I decided to construct a test circuit with a transistor that roughly operated as a voltage-controlled resistor. To achieve this, I selected an extraordinarily large base resistor (around 5M in this case) to suppress the transistor's gain to the point where its beta value and base resistor dominated the gain. This conclusion was reached following a small signal analysis of the transistor and oscillator, as illustrated below:
 
