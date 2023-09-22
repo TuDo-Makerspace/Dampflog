@@ -36,7 +36,7 @@ The "Dampflockpfeife" is a [Printed Circuit Board that was published by Conrad E
 
 Here's a showcase of how the Whistle sounds:
 
-![Whistle Demo](docs/WhistleDemo.mov)
+https://github.com/TU-DO-Makerspace/Dampflog/assets/12089409/401a1205-c79d-425e-badc-b6d5c987373b
 
 As you can hear, it does somewhat resemble a steam locomotive whistle, albeit rather poorly. That being said, a digital solution at the time would likely have been signficantly more expensive.
 
