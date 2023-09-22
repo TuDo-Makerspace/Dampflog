@@ -36,7 +36,7 @@ The "Dampflockpfeife" is a [Printed Circuit Board that was published by Conrad E
 
 Here's a showcase of how the Whistle sounds:
 
-INSERT VIDEO HERE
+![Whistle Demo](docs/WhistleDemo.mov)
 
 As you can hear, it does somewhat resemble a steam locomotive whistle, albeit rather poorly. That being said, a digital solution at the time would likely have been signficantly more expensive.
 
@@ -65,7 +65,7 @@ Now, returning to the circuit itself: the AC voltage first passes through a full
 For my intents and purposes the whole power section was not needed. Instead, I simply used a 12V DC power supply and connected it directly to the 12V rail.
 
 #### 2. Trigger/Gate circuit
-
+-
 As I delved into the schematic, one symbol immediately captured my attention: the NE555 timer IC. At first glance, I presumed it might be responsible for generating the whistle tone itself, but I quickly discovered that it operates in monostable/one-shot mode to generate a temporary gate signal. This gate signal serves to trigger the oscillator. Its duration is adjustable via potentiometer P2, allowing for a range spanning 1 to 10 seconds based on the potentiometer's setting.
 
 To output a gate signal, a switch connected to the trigger input of the NE555 (labeled "Start" in the schematic) must be closed. This action pulls down the trigger pin and prompts the NE555 to produce a high signal at output pin 3, sustaining it for the preconfigured duration. This signal subsequently forward-biases transistor T3. Since the collector of T3 is connected to the base of T2, T2 becomes reverse-biased as a result. If no gate signal is present (default state), T2 is forward-biased via the pull-up resistor R4, which keeps the feedback path of the oscillator grounded, preventing it from generating any tone. With T2 in a reverse-biased state, the feedback path is no longer held down, enabling the oscillator to oscillate freely and synthesize the desired tone.
