@@ -14,6 +14,7 @@ A synthesizer built from an [old Conrad Train whistle PCB](docs/DLP_Manual.pdf)
 		- [2. Trigger/Gate circuit](#2-triggergate-circuit)
 		- [3. Oscillator](#3-oscillator)
 		- [4. Output Stage/Amplifier](#4-output-stageamplifier)
+- [Background - The Makerthon](#background---the-makerthon)
 - [Hacking the PCB](#hacking-the-pcb)
 	- [Power Input](#power-input)
 	- [Audio Output](#audio-output)
@@ -107,6 +108,14 @@ Additionally, the LM741 exhibits an intersting trait: At higher frequencies, it 
 
 To be honest, I don't possess enough experience in the field of transistor amplifiers, and given that the output stage is not really relevant for my project, I haven't delved deeply into its functionality. I have a vague suspicion that T4 and T5 might play a role in amplifying the signal voltage, while the complementary push-pull amplifier comprising T7 and T6 might be responsible for current buffering. However, as mentioned, I'm not entirely certain so I welcome any corrections or clarifications if I'm off the mark.
 
+## Background - The Makerthon
+
+Before discussing the modifications I made to the circuit board, I'd like to provide some context for this project. This project was born out of a Hackathon organized at our Makerspace, called "Makerthon". The theme, albeit not mandatory, was to "Upcycle" old electronics that we had lying around in the Makerspace. The time frame for the Hackathon was about two and a half days.
+
+![Makerthon](docs/MakerthonPoster.png)
+
+During the first day the task was to scavange for old electronics and brainstorm ideas for potential projects. After digging through an old box of PCBs I stumbled upon the Dampflog PCB. From there, it didn't take long to find the manual online and jump to the idea of turning this thing into a musical synthesizer!
+
 ## Hacking the PCB
 
 After thoroughly examining the circuit, it was time to transform the PCB into a musical synthesizer. Before I could wield my trusty soldering iron, I needed to formulate a roadmap of the features I wanted to "hack" into the PCB. Here's my initial list of requirements:
@@ -119,7 +128,7 @@ After thoroughly examining the circuit, it was time to transform the PCB into a 
 
 Beyond these additions, I wanted to ensure that the device retained its original functionality. To achieve this, I included a push-button for manual gate signal triggering, along with potentiometers to adjust the gate signal duration and pitch manually.
 
-For housing the PCB, I repurposed an old metal box that had once contained a [data transfer switch (KVM Switch)](https://www.amazon.com/Kentek-Parallel-Peripherals-Devices-Printer/dp/B07KWRWLRN)—which we happened to have lying around in the makerspace. Typically, I would have opted for a 3D-printed enclosure, but as mentioned at the top of this README, this project was created during a Hackathon, and I simply didn't have the luxury of time for enclosure design and printing. As a playful touch, I even gave the enclosure a neat little spray-paint job, just for the fun of it.
+For housing the PCB, I repurposed an old metal box that had once contained a [data transfer switch (KVM Switch)](https://www.amazon.com/Kentek-Parallel-Peripherals-Devices-Printer/dp/B07KWRWLRN)—which we happened to have lying around in the makerspace. Typically, I would have opted for a 3D-printed enclosure, but as mentioned prior, this project was created during a Hackathon, and I simply didn't have the luxury of time for enclosure design and printing. As a playful touch, I even gave the enclosure a neat little spray-paint job, just for the fun of it.
 
 ### Power Input
 
