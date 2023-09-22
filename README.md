@@ -21,7 +21,8 @@ A synthesizer built from an [old Conrad Train whistle PCB](docs/DLP_Manual.pdf)
 	- [Original Controls](#original-controls)
 	- [HOLD Switch](#hold-switch)
 	- [Gate Input](#gate-input)
-		- [Pitch Control - Initial Approach](#pitch-control---initial-approach)
+	- [Pitch Control](#pitch-control)
+		- [Initial Approach](#initial-approach)
 		- [Time to get serious](#time-to-get-serious)
 		- [Screw CV, we're going full MIDI](#screw-cv-were-going-full-midi)
 		- [A PCB to rule them all](#a-pcb-to-rule-them-all)
@@ -195,9 +196,11 @@ Despite this, I still found the GATE input to be genuinely useful in only two sc
 - When the BPM/tempo setting allows the oscillator sufficient time to attain its desired pitch.
 - When creating a percussive, choppy sound effect.
 
-Interestingly, I stumbled upon the second scenario as a seriously cool unintended feature. It particularly shines when the oscillator is pushed to its upper limits, allowing only the noise within the feedback path to be gated. This makes for a dirty, industrial screechy sound which is great for harsher techno tracks. You can explore a sample of this distinctive sound, enhanced with a touch of distortion, reverb, flanging, and some percussion, by [clicking here](https://soundcloud.com/user-631734174/dampflog-gate-noise-test).
+Interestingly, I found the second scenario to be a seriously cool unintended feature. It particularly shines when the oscillator is pushed to its upper limits, allowing only the noise within the feedback path to be gated. This makes for a dirty, industrial screechy sound which is great for harsher techno tracks. You can explore a sample of this distinctive sound, enhanced with a touch of distortion, reverb, flanging, and some percussion, by [clicking here](https://soundcloud.com/user-631734174/dampflog-gate-noise-test).
 
-#### Pitch Control - Initial Approach
+### Pitch Control
+
+#### Initial Approach
 
 To at least deliver a proof of concept for the end of the Makerthon I had to at least implement some form of half-arsed pitch control. For the sake of demonstration I
 disattached the Pitch potentiometer P1 and soldered in a generic Jellybean transistor in place. Then I added a 3.5mm jack for a CV input and simply soldered it with a
@@ -247,11 +250,13 @@ With a DAC, it's still important to maintain control over the transistor's gain 
 
 In order to create a digital interface for controlling the Dampflog, it became evident that a PCB would be practical for the task. Consequently, I proceeded to designing a PCB that incorporates various key elements, including MIDI circuitry, an STM8S development board as MCU, a DAC, and a couple of additional features like a GATE output and portamento functionality. The GATE output allows for MIDI-based GATE control. Additionally, I integrated switches to transition between manual oscillator operation and digital control. For the GATE function, I simply applied an AND logic operation to the MCU's GPIO output and the previously implemented analog GATE jack. This spared me from having to add another switch, which would convolute the device even more.
 
-INSERT SCHEMATIC
+![Interface Board Schematic](docs/InterfaceBoardSchematic.png)
 
-INSERT PCB
+![Interface Board PCB](docs/InterfaceBoardPCB.png)
 
-It's worth noting that I designed the PCB to fit within a single layer, allowing for in-house etching. However, in retrospect I was rather naive about the clearances, leading to some challenges during the etching process (some traces were close they ended up shorting). Despite these hiccups, the PCB eventually performed its intended function.
+It's worth noting that I designed the PCB to fit within a single layer, allowing for in-house etching. The red traces represent jumper wires. In retrospect I was rather naive about the clearances, which lead to some challenges during the etching process (some traces were close they ended up shorting). Despite these hiccups, the PCB eventually performed its intended function.
+
+![Interface Board](docs/InterfaceBoardBuilt.jpg)
 
 Now, I won't delve into further details of the interface board in here, as it deserves a dedicated README of its own. You can find comprehensive coverage of the interface board, including insights into the MCU's firmware, in the README file within the InterfaceBoard directory.
 
