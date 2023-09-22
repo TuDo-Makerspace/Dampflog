@@ -45,7 +45,8 @@ As you can hear, it does somewhat resemble a steam locomotive whistle, albeit ra
 Given its publication date, it should not come as a surprise that this circuit is devoid of any digital components. The whistle sound is synthesized entirely through analog means. Fortunately, the PCB's manual is, despite its age, [readily accessible online](docs/DLP_Manual.pdf). It offers a comprehensive resource, featuring a circuit description, a complete schematic, and even a PCB layout. While the manual is in German, fear not, as we will provide a comprehensive coverage of the circuit here.
 
 Here's the schematic of the circuit:
-![Schematic](docs/schematic.png)
+
+![Schematic](docs/DLP_Schematic.png)
 
 The circuit can be split into four parts:
 
@@ -56,7 +57,7 @@ The circuit can be split into four parts:
 
 #### 1. Power stage
 
-![Power stage](docs/power_stage.png)
+![Power stage](docs/DLP_Schematic_Power.png)
 
 I initially found it somewhat peculiar that the circuit operates on AC voltage as its input. It appears this choice was made to ensure compatibility with "Märklin" model train tracks, which, in contrast to their competitors, rely on AC voltage. According to various sources, this voltage typically falls within the range of 16 to 24 volts. While I'm no expert in model trains, I did have the fortunate opportunity to recently talk with someone knowledgeable in the field. They explained me that this unique reliance on AC voltage is a rather quirky characteristic of Märklin model trains.
 
@@ -65,12 +66,16 @@ Now, returning to the circuit itself: the AC voltage first passes through a full
 For my intents and purposes the whole power section was not needed. Instead, I simply used a 12V DC power supply and connected it directly to the 12V rail.
 
 #### 2. Trigger/Gate circuit
--
+
+![Trigger Stage](docs/DLP_Schematic_Trigger.png)
+
 As I delved into the schematic, one symbol immediately captured my attention: the NE555 timer IC. At first glance, I presumed it might be responsible for generating the whistle tone itself, but I quickly discovered that it operates in monostable/one-shot mode to generate a temporary gate signal. This gate signal serves to trigger the oscillator. Its duration is adjustable via potentiometer P2, allowing for a range spanning 1 to 10 seconds based on the potentiometer's setting.
 
 To output a gate signal, a switch connected to the trigger input of the NE555 (labeled "Start" in the schematic) must be closed. This action pulls down the trigger pin and prompts the NE555 to produce a high signal at output pin 3, sustaining it for the preconfigured duration. This signal subsequently forward-biases transistor T3. Since the collector of T3 is connected to the base of T2, T2 becomes reverse-biased as a result. If no gate signal is present (default state), T2 is forward-biased via the pull-up resistor R4, which keeps the feedback path of the oscillator grounded, preventing it from generating any tone. With T2 in a reverse-biased state, the feedback path is no longer held down, enabling the oscillator to oscillate freely and synthesize the desired tone.
 
 #### 3. Oscillator
+
+![Oscillator](docs/DLP_Schematic_Oscillator.png)
 
 The oscillator is arguably the most important part of the entire circuit. It somewhat resembles a relaxation oscillator built around an LM741 operational amplifier (OP-AMP), albeit with a distinct set of quirks that give it its unique character.
 
@@ -93,6 +98,8 @@ GRAPH HERE
 Additionally, the LM741 exhibits an intersting trait: At higher frequencies, it exhibits a low-pass filtering effect. Lower frequencies result in a more square-like output, while higher frequencies manifest as a more triangular waveform. This phenomenon can likely be attributed to the slew rate of the LM741, and it controbutes to a distinctive and appealing character to the resulting sound.
 
 #### 4. Output Stage/Amplifier
+
+![Output Stage](docs/DLP_Schematic_Output.png)
 
 To be honest, I don't possess enough experience in the field of transistor amplifiers, and given that the output stage is not really relevant for my project, I haven't delved deeply into its functionality. I have a vague suspicion that T4 and T5 might play a role in amplifying the signal voltage, while the complementary push-pull amplifier comprising T7 and T6 might be responsible for current buffering. However, as mentioned, I'm not entirely certain so I welcome any corrections or clarifications if I'm off the mark.
 
