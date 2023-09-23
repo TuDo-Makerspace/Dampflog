@@ -224,19 +224,22 @@ This response is neither linear nor exponential. If it were linear, we could sim
 
 SMALL SIGNAL ANALYSIS HERE
 
-The next step involved sweeping the transistor's base voltage using a function generator and measuring the oscillator's frequency. The outcome was predictably disappointing. As anticipated, the response exhibited inverse-multiplicative behavior, with the oscillator stabilizing at high frequencies:
+The next step involved sweeping the transistor's base voltage using a function generator and measuring the oscillator's frequency. The outcome was predictably disappointing. As anticipated, the response exhibited inverse-multiplicative behavior, with the oscillator stabilizing at high frequencies. I unfortunately only measured the frequency response within the operating range of the
+transistor, so to better illustrate the inverse-multiplicative behavior the graph below shows the frequency to base voltage response on a equivalent LTSpice simulated circuit:
 
-INSERT GRAPH
+![Base Voltage vs Frequency Response](docs/SimBaseVsFreq.png)
 
-Upon analyzing the output for note intercepts, it became apparent that the response only approximates exponential pitch within an exceedingly narrow range. If we plot the distances between each note intercept, this discrepancy becomes even more pronounced.
+It should be noted that the real oscillator does not reach frequencies below 116Hz, other than that the response is similar enough to demonstrate my point.
 
-INSERT GRAPH
+Notice the grey lines in the graph. These represent note intercepts. Taking a quick glance at the note intercepts, it becomes apparent that the response only approximates exponential pitch within an exceedingly narrow range. Ideally we'd want them to be equally spaced on the x axis to implement 1V/Oct. If we plot the distances between each note intercept, this discrepancy becomes even more pronounced. Here's actual data from the real oscillator:
 
-INSERT GRAPH
+![Delta Notes](docs/DeltaNotes.png)
 
-I went so far as to construct a 1V/Oct scaling circuit to connect my Keystep keyboard. While I achieved reasonably linear behavior in the fourth octave (corresponding to the "sweet spot" where the inverse-multiplicative function is most similar to the exponential pitch function), venturing beyond the octave swiftly resulted in severely out-of-tune frequencies. This deviation escalated significantly the further we moved away from this "sweet spot."
+As we can see pitch only behaves linearly proportional around 3.5V with a steps size of about 60mV/Note. For the setup in question, 3.5V corresponded to approximately 300Hz, which falls within the 4th octave. As we leave 3.5V this proportion begins to drift away from the close to constant 60mV, which will cause the pitch to become out of tune.
 
-SHOWCASE
+![Delta Notes within Sweet Spot](docs/DeltaNotesOP.png)
+
+I actually went so far as to construct a 1V/Oct scaling circuit to connect my Keystep keyboard. While I achieved reasonably linear behavior in the fourth octave (as corresponding to the "sweet spot" where the inverse-multiplicative function is most similar to the exponential pitch function), venturing beyond the octave unsuprisingly resulted in severely out-of-tune frequencies. This deviation escalated significantly the further we moved away from this "sweet spot."
 
 #### Screw CV, we're going full MIDI
 
