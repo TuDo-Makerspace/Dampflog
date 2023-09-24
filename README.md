@@ -281,7 +281,7 @@ Now, I won't delve into further details of the interface board in here, as it de
 
 Here's the final block diagram of the circuit, including the interface board:
 
-INSERT BLOCK DIAGRAM
+![Final Block Diagram](docs/DampflogBlock.png)
 
 So, what I've got here is a steam locomotive whistle synth that's grooving to the MIDI rhythms. It's kinda hilarious to think that someone originally snagged this thing for their model train setup, and now, more than two decades later, it's belting out some seriously gritty techno tunes.
 
