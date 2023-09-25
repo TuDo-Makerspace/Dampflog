@@ -264,7 +264,7 @@ void handle_midi_msg(midi_msg_t *msg)
 		CLOSE_GATE();
 		LOG_DEBUG("Closed GATE");
 
-		/* Please note that the GATE is ANDed with the analog
+		/* Please note that the GATE is OR'd with the analog
 		 * gate input (GATE Jack and HOLD Switch), meaning that
 		 * the gate will only be closed if the analog gate input
 		 * is also closed. */
