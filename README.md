@@ -263,7 +263,7 @@ With a DAC, it's still important to maintain control over the transistor's gain 
 
 #### A PCB to rule them all
 
-In order to create a digital interface for controlling the Dampflog, it became evident that a PCB would be practical for the task. Consequently, I proceeded to designing a PCB that incorporates various key elements, including MIDI circuitry, an STM8S development board as MCU, a DAC, and a couple of additional features like a GATE output and portamento functionality. The GATE output allows for MIDI-based GATE control. Additionally, I integrated switches to transition between manual oscillator operation and digital control. For the GATE function, I simply applied an AND logic operation to the MCU's GPIO output and the previously implemented analog GATE jack. This spared me from having to add another switch, which would convolute the device even more.
+In order to create a digital interface for controlling the Dampflog, it became evident that a PCB would be practical for the task. Consequently, I proceeded to designing a PCB that incorporates various key elements, including MIDI circuitry, an STM8S development board as MCU, a DAC, and a couple of additional features like a GATE output and portamento functionality. The GATE output allows for MIDI-based GATE control. Additionally, I integrated switches to transition between manual oscillator operation and digital control. For the GATE function, I simply applied an OR logic operation to the MCU's GPIO output and the previously implemented analog GATE inputs. This spared me from having to add another switch, which would convolute the device even more.
 
 ![Interface Board Schematic](docs/InterfaceBoardSchematic.png)
 
