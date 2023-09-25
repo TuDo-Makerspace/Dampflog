@@ -3755,7 +3755,7 @@
     (property "Reference" "R9" (at 372.745 198.755 90)
       (effects (font (size 1.27 1.27)))
     )
-    (property "Value" "3M" (at 372.745 201.295 90)
+    (property "Value" "2.2M" (at 372.745 201.295 90)
       (effects (font (size 1.27 1.27)))
     )
     (property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" (at 372.745 206.248 90)
