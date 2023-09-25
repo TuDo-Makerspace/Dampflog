@@ -17,14 +17,13 @@ Here's the schematic:
 
 And here's the PCB layout:
 
-![PCB Layout](../docs/InterfaceBoardPCB.png)
+<p align="center">
+	<img src="../docs/InterfaceBoardPCB.png" height=650px>
+</p>
 
-The red traces do not represent real traces, but rather jumper wires. Here's the rather sloppy result:
+The red traces do not represent real traces, but rather jumper wires. In hinsight I was overly optimistic with the clearances on the PCB. As a result there were some traces that ended up shorting after the board was etched. Some of them could be saved by seperating the traces with a knife, but others were so messed up I simply broke the connections and used jumper wires instead. 
 
 ![Interface Board](../docs/InterfaceBoardBuilt.jpg)
-
-In hinsight I was overly optimistic with the clearances on the PCB. As a result there were some traces that ended up shorting after
-the board was etched. Some of them could be saved by seperating the traces with a knife, but others were so messed up I simply broke the connections and used jumper wires instead. 
 
 ## Overview
 
