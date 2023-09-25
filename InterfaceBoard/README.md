@@ -35,21 +35,21 @@ The Interface Board consists four parts:
 
 ### MIDI Input & Thru
 
-For the MIDI Input and Thru circuit, I simply referenced a template design I made a while ago. Hence, I won't bother explaining it here but rather refer to the [MIDI Templates Repository](https://github.com/TU-DO-Makerspace/KiCAD-MIDI-Templates).
+For the MIDI Input and Thru circuit, I simply referenced a [template design I made a while ago](https://github.com/TU-DO-Makerspace/KiCAD-MIDI-Templates). The MIDI IN circuit operates on 3.3V and uses a 6N137 Optocoupler. The MIDI THRU circuit is connected in parallel to the optocoupler output and simply buffers the incomign signal to the MIDI thru port.
 
-PICTURE OF MIDI CIRCUIT
+![MIDI Input & Thru](../docs/InterfaceBoard_MIDI.png)
 
 ## Gate Output
 
-For the GATE output, the board actually accepts the manual GATE controlls (Gate JACK and HOLD switch) as an input, and simply AND's it with the Microcontroller's GATE output using two diodes and a pull down resistor. The MCU's GATE output is simply driven by a GPIO.
+For the GATE output, the board actually accepts the manual GATE controlls (Gate JACK and HOLD switch) as an input, and simply OR's it with the Microcontroller's GATE output using two diodes and a pull down resistor. The MCU's GATE output is simply driven by a GPIO.
 
-PICTURE OF GATE CIRCUIT
+![Gate Output](../docs/InterfaceBoard_GATE.png)
 
 ## Pitch Control
 
 The pitch control circuit primarily comprises three key components: a DAC, a buffer, and a common-emitter transistor connected to the Dampflockpfeife PCB's oscillator, thereby controlling the pitch. Situated between the DAC and the buffer is an adjustable low-pass filter which allows for slide/portamento by delaying changes in the CV signal.
 
-PICTURE OF PITCH CIRCUIT
+![Pitch Control](../docs/InterfaceBoard_PITCH.png)
 
 The chosen DAC is a [MCP4921](https://ww1.microchip.com/downloads/en/DeviceDoc/21897B.pdf), providing 12-bit resolution and can be controlled via an SPI interface. The buffer is implemented using a single-supply rail-to-rail MCP6002](https://www.reichelt.de/index.html?ACTION=7&LA=3&OPEN=0&INDEX=0&FILENAME=A200%2FMCP6002_MCP6004_MIC.pdf).
 
@@ -66,7 +66,7 @@ The choice of components was mostly based on what was readily available in our M
 
 The microcontroller forms the brain of the interface board. It is responsible for reading the MIDI input and consequently controlling the Damplogs GATE and pitch. The chosen MCU is a STM8S103F3P6 which is not directly mounted on the interface board, but rather comes on a devboard. The devboard also provides a 3.3V regulator which also provides a voltage supply for other ICs on the interface board.  
 
-PICTURE OF MCU
+![Microcontroller](../docs/InterfaceBoard_MCU.png)
 
 The STM8S can be programmed with an ST-LINK using the SWIM interface. The cheap chinese ST-LINK clones will also do the job. For those wondering why I didn't choose a more common platform such as an Arduino or a Pi Pico. Well, for one, the STM8 devboards are dirt cheap (we're talking 80Cents per board). Another reason is because I have past experience with MIDI on the STM8S platform, allowing me to recycle a good chunk of code. The firmware will be discussed in the next section.
 
