@@ -82,12 +82,12 @@ The STM8S can be programmed with an ST-LINK using the SWIM interface. The cheap 
 
 # Firmware
 
-The firmware is written in C and compiled with SDCC. I also make use of the [STM8S Standard Peripheral Library]() which provides a minimal abstraction layer for the STM8S's peripherals. The firmware is rather simple, and simply listens for UART RX interrupts. When a UART RX interrupt has been received, it is evaluated for MIDI. If the input forms a valid and supported MIDI message, the appropriate action is taken. Currently, the firmware supports the following MIDI messages:
+The firmware is written in C and compiled with SDCC. I also make use of the [STM8S Standard Peripheral Library](https://github.com/bschwand/STM8-SPL-SDCC) which provides a minimal abstraction layer for the STM8S's peripherals. The firmware is rather simple, and simply listens for UART RX interrupts. When a UART RX interrupt has been received, it is evaluated for MIDI. If the input forms a valid and supported MIDI message, the appropriate action is taken. Currently, the firmware supports the following MIDI messages:
 
 - `Note On`
 - `Note Off`
 
-Upon `Note On`, the note number is mapped to a DAC value using a lookup table found in [include/midi_2_dac.h](include/midi_2_dac.h). The DAC value is then written to the DAC via SPI and the GATE is turned on. Upon `Note Off`, the GATE is simply turned off.
+Upon `Note On`, the note number is mapped to a DAC value using a lookup table found in [firmware/include/midi_2_dac.h](firmware/include/midi_2_dac.h). The DAC value is then written to the DAC via SPI and the GATE is turned on. Upon `Note Off`, the GATE is simply turned off.
 
 Notes that are out of the oscillators range are simply mapped to the highest or lowest possible note.
 
@@ -96,7 +96,7 @@ Perhaps as an interesting side note: When a debug build is compiled, the firmwar
 - `SET DAC <DAC VALUE MSB> <DAC VALUE LSB>`
 - `SET GATE <GATE VALUE>`
 
-The `SET DAC` command allows one to manually set the DACs value. This is actually used to generate the "MIDI 2 DAC" lookup table found in [include/midi_2_dac.h] via a python script found in [tools/tune.py]. The `SET GATE` command allows one to manually set the GATE output, which proved to simply be useful for debugging and testing during development.
+The `SET DAC` command allows one to manually set the DACs value. This is actually used to generate the "MIDI 2 DAC" lookup table found in [firmware/include/midi_2_dac.h](firmware/include/midi_2_dac.h) via a python script found in [firmware/tools/tune.py](firmware/tools/tune.py). The `SET GATE` command allows one to manually set the GATE output, which proved to simply be useful for debugging and testing during development.
 
 The debug build also prints a verbose log via UART. To save space and especially processing time, logging and SYSEX are disabled in non-debug builds.
 
