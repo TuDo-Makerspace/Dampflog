@@ -1,5 +1,7 @@
 # Dampflog Interface Board
 
+> This README is WIP
+
 Within this directory, you will find the firmware and KiCad project for the Dampflog Interface Board. The primary objective of this interface board is to equpt the Dampflog with a digital interface, specifically through MIDI. It accepts MIDI input and manages the Dampflog's gate and pitch in accordance with the note command it receives. It also has a MIDI thu output, allowing the dampflog to be daisy-chained with other MIDI devices.
 
 # Hardware
@@ -51,7 +53,7 @@ The pitch control circuit primarily comprises three key components: a DAC, a buf
 
 ![Pitch Control](../docs/InterfaceBoard_PITCH.png)
 
-The chosen DAC is a [MCP4921](https://ww1.microchip.com/downloads/en/DeviceDoc/21897B.pdf), providing 12-bit resolution and can be controlled via an SPI interface. The buffer is implemented using a single-supply rail-to-rail MCP6002](https://www.reichelt.de/index.html?ACTION=7&LA=3&OPEN=0&INDEX=0&FILENAME=A200%2FMCP6002_MCP6004_MIC.pdf).
+The chosen DAC is a [MCP4921](https://ww1.microchip.com/downloads/en/DeviceDoc/21897B.pdf), providing 12-bit resolution and can be controlled via an SPI interface. The buffer is implemented using a single-supply rail-to-rail [MCP6002](https://www.reichelt.de/index.html?ACTION=7&LA=3&OPEN=0&INDEX=0&FILENAME=A200%2FMCP6002_MCP6004_MIC.pdf).
 
 The buffer's output is wired to a 2N2222A NPN transistor's base with a 2.2MOhm resistor.
 This controls the pitch of the oscillator. The high base resistor supresses the transistor's gain, providing a more linear current control. With that said: A too large base resistor would limit the circuits ability to step through the oscillator's complete pitch range. Hence, the base resistor was chosen to still allow the DAC to reach the full pitch range of the oscillator with the MCU's 3.3V supply voltage. Another issue with large resistances is that the paths high impedance becomes more susceptible to noise. To minimize this effect, the trace was kept as short as possible. The ground plane surrounding the trace also helps to supress noise.
