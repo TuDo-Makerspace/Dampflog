@@ -66,6 +66,7 @@
 #define UART_PORT GPIOD
 #define UART_TX_PIN GPIO_PIN_5
 #define UART_RX_PIN GPIO_PIN_6
+
 #define UART_MIDI_BAUD 31250
 
 #define SYSEX_MANUFACTURER_ID 0x7D // Manufacturer ID for private use
@@ -80,10 +81,10 @@
 ////////////////////////////////////////////
 
 const mcp49xx_cfg cfg = {
-    .dac = WRITE,
-    .buffer = DAC_BUF_ON,
-    .gain = DAC_GAIN_1X,
-    .shutdown = DAC_ACTIVE,
+	.dac = WRITE,
+	.buffer = DAC_BUF_ON,
+	.gain = DAC_GAIN_1X,
+	.shutdown = DAC_ACTIVE,
 };
 
 ////////////////////////////////////////////
@@ -205,8 +206,7 @@ void spi_write16(uint16_t data)
 bool status_filter(midi_status_t status)
 {
 	if (midirx_status_is_cmd(status, MIDI_STAT_NOTE_ON) ||
-	    midirx_status_is_cmd(status, MIDI_STAT_NOTE_OFF))
-	{
+	    midirx_status_is_cmd(status, MIDI_STAT_NOTE_OFF)) {
 		return true;
 	}
 
@@ -233,15 +233,13 @@ void handle_midi_msg(midi_msg_t *msg)
 
 	LOG_DEBUG("Processing MIDI Message: %02X, %02X, %02X", msg->status, msg->data1, msg->data2);
 
-	if (midirx_status_is_cmd(status, MIDI_STAT_NOTE_ON))
-	{
+	if (midirx_status_is_cmd(status, MIDI_STAT_NOTE_ON)) {
 		const uint8_t note = msg->data1;
 
 		LOG_DEBUG("Message is NOTE ON, Note: %d", note);
 
 		// Should never occur, but just in case.
-		if (note > MIDI_DATA_MAX_VAL)
-		{
+		if (note > MIDI_DATA_MAX_VAL) {
 			LOG_DEBUG("Invalid NOTE ON, note is out of range (0-127)");
 			return;
 		}
@@ -256,9 +254,7 @@ void handle_midi_msg(midi_msg_t *msg)
 
 		OPEN_GATE();
 		LOG_DEBUG("Opened GATE");
-	}
-	else if (midirx_status_is_cmd(status, MIDI_STAT_NOTE_OFF))
-	{
+	} else if (midirx_status_is_cmd(status, MIDI_STAT_NOTE_OFF)) {
 		LOG_DEBUG("Message is NOTE OFF, Note: %d", msg->data1);
 
 		CLOSE_GATE();
@@ -268,9 +264,7 @@ void handle_midi_msg(midi_msg_t *msg)
 		 * gate input (GATE Jack and HOLD Switch), meaning that
 		 * the gate will only be closed if the analog gate input
 		 * is also closed. */
-	}
-	else
-	{
+	} else {
 		LOG_DEBUG("Unhandled MIDI message: %02X", status);
 	}
 }
@@ -302,8 +296,7 @@ void handle_sysex_msg(uint8_t *buf, size_t len)
 {
 	LOG_DEBUG("Processing SYSEX message");
 
-	if (len < 2)
-	{
+	if (len < 2) {
 		LOG_DEBUG("SYSEX message is too short to be valid")
 		return;
 	}
@@ -311,50 +304,40 @@ void handle_sysex_msg(uint8_t *buf, size_t len)
 	const uint8_t manufacturer_id = buf[0];
 	const uint8_t message_type = buf[1];
 
-	if (manufacturer_id != SYSEX_MANUFACTURER_ID)
-	{
-		LOG_DEBUG("Missmatching SYSEX Manufacturer ID: %02X, expecting: %02X", manufacturer_id, SYSEX_MANUFACTURER_ID);
+	if (manufacturer_id != SYSEX_MANUFACTURER_ID) {
+		LOG_DEBUG("Missmatching SYSEX Manufacturer ID");
 		return;
 	}
 
-	switch (message_type)
-	{
+	switch (message_type) {
 	case SYSEX_SET_DAC:
-		if (len == 4)
-		{
+		if (len == 4) {
 			LOG_DEBUG("Received SET DAC message");
-			uint16_t value = buf[2] << 8 | buf[3]; // Combine MSB and LSB into 16-bit value
+			// Sysex only supports 7-bit data values.
+			// To transmit the 12-bits required for the DAC,
+			// we need to combine two 7-bit values into one 12-bit value.
+			uint16_t value = buf[2] << 7 | buf[3];
 			spi_write16(mcp49xx_data(cfg, value));
 			LOG_DEBUG("Set DAC to %d", value);
-		}
-		else
-		{
+		} else {
 			LOG_DEBUG("Bad SET DAC message");
 		}
 		break;
 	case SYSEX_SET_GATE:
-		if (len == 3)
-		{
+		if (len == 3) {
 			LOG_DEBUG("Received SET GATE message");
 
 			uint8_t value = buf[2];
-			if (value == SYSEX_SET_GATE_CLOSE_VAL)
-			{
+			if (value == SYSEX_SET_GATE_CLOSE_VAL) {
 				CLOSE_GATE();
 				LOG_DEBUG("Closed gate");
-			}
-			else if (value == SYSEX_SET_GATE_OPEN_VAL)
-			{
+			} else if (value == SYSEX_SET_GATE_OPEN_VAL) {
 				OPEN_GATE();
 				LOG_DEBUG("Opened gate");
+			} else {
+				LOG_DEBUG("Invalid GATE value");
 			}
-			else
-			{
-				LOG_DEBUG("Invalid GATE value, expected %02X or %02X", SYSEX_SET_GATE_CLOSE_VAL, SYSEX_SET_GATE_OPEN_VAL);
-			}
-		}
-		else
-		{
+		} else {
 			LOG_DEBUG("Bad SET GATE message");
 		}
 		break;
@@ -395,8 +378,7 @@ void main(void)
 #ifdef USE_FULL_ASSERT
 void assert_failed(uint8_t *file, uint32_t line)
 {
-	while (TRUE)
-	{
+	while (TRUE) {
 	}
 }
 #endif

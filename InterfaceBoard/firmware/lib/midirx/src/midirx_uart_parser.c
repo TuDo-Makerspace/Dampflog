@@ -23,8 +23,7 @@
 #include "midirx_uart_parser.h"
 #include "midirx_msg.h"
 
-typedef enum
-{
+typedef enum {
 	STATUS,
 	DATA1,
 	DATA2,
@@ -49,11 +48,11 @@ inline void on_midi_rx_complete(midi_msg_t *msg)
 #error "MAX_SYSEX_LEN must be defined if SysEx is enabled"
 #endif
 
-typedef enum
-{
+typedef enum {
 	RECEIVING,
 	DONE,
-	LEN_EXCEEDED
+	LEN_EXCEEDED,
+	INVALID
 } sysex_rx_state_t;
 
 inline void on_sysex_complete(uint8_t *data, size_t len)
@@ -69,10 +68,8 @@ inline sysex_rx_state_t parse_sysex(uint8_t data)
 	static uint8_t buf[MAX_SYSEX_LEN];
 	static size_t buf_index = 0;
 
-	if (data == MIDI_STAT_SYSEX_END)
-	{
-		if (buf_index > 0)
-		{
+	if (data == MIDI_STAT_SYSEX_END) {
+		if (buf_index > 0) {
 			on_sysex_complete(buf, buf_index);
 			buf_index = 0;
 		}
@@ -80,8 +77,10 @@ inline sysex_rx_state_t parse_sysex(uint8_t data)
 		return DONE;
 	}
 
-	if (buf_index == MAX_SYSEX_LEN)
-	{
+	if (!midirx_is_data(data))
+		return INVALID;
+
+	if (buf_index == MAX_SYSEX_LEN) {
 		buf_index = 0;
 		return LEN_EXCEEDED;
 	}
@@ -98,24 +97,20 @@ void midirx_parse_uart_rx(uint8_t data)
 	static midi_msg_t msg;
 	static midi_rx_state_t state = STATUS;
 
-	switch (state)
-	{
+	switch (state) {
 	case STATUS:
-		if (!midirx_is_status(data))
-		{
+		if (!midirx_is_status(data)) {
 			return;
 		}
 
 #ifdef SYSEX_ENABLED
-		if (midirx_status_is_cmd(data, MIDI_STAT_SYSEX))
-		{
+		if (midirx_status_is_cmd(data, MIDI_STAT_SYSEX)) {
 			state = SYSEX;
 			return;
 		}
 #endif
 		if (_midi_status_filter != NULL &&
-		    !_midi_status_filter(data))
-		{
+		    !_midi_status_filter(data)) {
 			return;
 		}
 
@@ -132,8 +127,7 @@ void midirx_parse_uart_rx(uint8_t data)
 #endif
 
 	case DATA1:
-		if (!midirx_is_data(data))
-		{
+		if (!midirx_is_data(data)) {
 			state = STATUS;
 			return;
 		}
@@ -143,8 +137,7 @@ void midirx_parse_uart_rx(uint8_t data)
 		break;
 
 	case DATA2:
-		if (!midirx_is_data(data))
-		{
+		if (!midirx_is_data(data)) {
 			state = STATUS;
 			return;
 		}
