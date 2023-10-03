@@ -9,7 +9,7 @@ from termios import tcflush, TCIFLUSH
 
 MAX_DAC_VAL = 0x0FFF
 
-UART_MIDI_BAUDRATE = 31250
+UART_MIDI_BAUDRATE = 115200
 
 SYSEX_MANUFACTURER_ID = 0x7D
 SYSEX_START = 0xF0
@@ -125,6 +125,7 @@ def handle_key(key):
                 f.write("\n")
             f.write("};\n")
             f.write("#endif\n")
+        exit(0)
         raise KeyboardInterrupt
 
     else:

@@ -6,7 +6,7 @@ dac_vals = []
 with open("midi_2_dac.csv", "r") as f:
     reader = csv.reader(f)
     for row in reader:
-        dac_vals.append(int(row[0]))
+        dac_vals.append(int(row[1]))
 
 plt.plot(dac_vals)
 plt.show()
