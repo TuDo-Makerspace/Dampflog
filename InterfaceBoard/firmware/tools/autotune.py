@@ -385,17 +385,27 @@ freq = msr_after_dac_chng(port, 0, 1, RECORD_DURATION)
 
 dac_val = 0
 
-dac_val, error = coarse_fine_tune(
-    port, dac_val, STEP_TABLE[0], 10, midi_note_to_freq(OSC_MIN_NOTE)
-)
-
-midi_2_dac[OSC_MIN_NOTE] = dac_val
-
-print(
-    "MIDI note: {}   \tDAC value: {} \tError (cents): {}".format(
-        midi_note_to_name_oct(OSC_MIN_NOTE), dac_val, error
+# Sometimes the min. Note is already slightly greater than A#2
+if freq >= midi_note_to_freq(OSC_MIN_NOTE):
+    midi_2_dac[OSC_MIN_NOTE] = 0
+    print(
+        "MIDI note: {}   \tDAC value: {} \t\tError (cents): {}".format(
+            midi_note_to_name_oct(OSC_MIN_NOTE), dac_val, error_in_cents(midi_note_to_freq(OSC_MIN_NOTE), freq)
+        )
     )
-)
+    dac_val = STEP_TABLE[0] # Pretend first note succeeded as second note is not as flaky
+else:
+    dac_val, error = coarse_fine_tune(
+        port, dac_val, STEP_TABLE[0], 10, midi_note_to_freq(OSC_MIN_NOTE)
+    )
+
+    midi_2_dac[OSC_MIN_NOTE] = dac_val
+
+    print(
+        "MIDI note: {}   \tDAC value: {} \tError (cents): {}".format(
+            midi_note_to_name_oct(OSC_MIN_NOTE), dac_val, error
+        )
+    )
 
 #####################################################
 # Determine remaining notes
