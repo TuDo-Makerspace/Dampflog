@@ -26,7 +26,6 @@
 #include <log.h>
 #include <msp49xx.h>
 #include <midirx.h>
-#include <midi_2_dac.h>
 
 ////////////////////////////////////////////
 // Defines (Pins, Magic Numbers, etc.)
@@ -63,11 +62,15 @@
 
 // UART + MIDI + SYSEX
 
+#define EEPROM_MIDI_2_DAC_LUT_START FLASH_DATA_START_PHYSICAL_ADDRESS
+
 #define UART_PORT GPIOD
 #define UART_TX_PIN GPIO_PIN_5
 #define UART_RX_PIN GPIO_PIN_6
 
 #define UART_MIDI_BAUD 31250
+
+#define MIDI_N_NOTES MIDI_DATA_MAX_VAL + 1
 
 #define SYSEX_MANUFACTURER_ID 0x7D // Manufacturer ID for private use
 
@@ -75,6 +78,13 @@
 #define SYSEX_SET_GATE 0x02
 #define SYSEX_SET_GATE_CLOSE_VAL 0x00
 #define SYSEX_SET_GATE_OPEN_VAL 0x01
+#define SYSEX_WRITE_MIDI_2_DAC_LUT 0x03
+
+////////////////////////////////////////////
+// Global MIDI to DAC Look-up Table
+////////////////////////////////////////////
+
+uint16_t midi2dac[MIDI_N_NOTES];
 
 ////////////////////////////////////////////
 // DAC Configuration
@@ -177,6 +187,66 @@ void setup_uart(void)
 }
 
 /**
+ * @brief Sets up the EEPROM
+ */
+void setup_eeprom(void)
+{
+	FLASH_DeInit();
+	FLASH_SetProgrammingTime(FLASH_PROGRAMTIME_STANDARD);
+}
+
+////////////////////////////////////////////
+// MIDI to DAC LUT
+////////////////////////////////////////////
+
+/**
+ * @brief Initializes/Loads the MIDI to DAC LUT from "EEPROM" (Data flash)
+ * @NOTE: Call this function before using the LUT (e.g. on startup)
+ */
+void midi2dac_from_eeprom()
+{
+	FLASH_Unlock(FLASH_MEMTYPE_DATA);
+	while (FLASH_GetFlagStatus(FLASH_FLAG_DUL) == RESET);
+
+	for (uint8_t i = 0; i < MIDI_N_NOTES; i++) {
+		uint16_t addr = EEPROM_MIDI_2_DAC_LUT_START + (i * 2);
+		uint8_t msb = FLASH_ReadByte(addr);
+		uint8_t lsb = FLASH_ReadByte(addr + 1);
+		midi2dac[i] = (msb << 8) | lsb;
+	}
+
+	FLASH_Lock(FLASH_MEMTYPE_DATA);
+}
+
+/**
+ * @brief Burns a MIDI to DAC LUT entry to "EEPROM" (Data flash)
+ * @param note MIDI note number
+ * @param dacval DAC value
+ *
+ * Writes a MIDI to DAC LUT entry to "EEPROM" (Data flash).
+ * Each DAC value is 12 bits wide, thus requiring two bytes of
+ * flash storage.
+ */
+void midi2dac_write_eeprom(uint8_t note, uint16_t dacval)
+{
+	FLASH_Unlock(FLASH_MEMTYPE_DATA);
+	while (FLASH_GetFlagStatus(FLASH_FLAG_DUL) == RESET);
+
+	uint16_t addr = EEPROM_MIDI_2_DAC_LUT_START + (note * 2);
+	uint8_t msb = dacval >> 8;
+	uint8_t lsb = dacval & 0xFF;
+
+	FLASH_ProgramByte(addr, msb);
+	FLASH_ProgramByte(addr + 1, lsb);
+
+	FLASH_Lock(FLASH_MEMTYPE_DATA);
+}
+
+////////////////////////////////////////////
+// SPI
+////////////////////////////////////////////
+
+/**
  * @brief Writes 16 bits to SPI
  */
 void spi_write16(uint16_t data)
@@ -197,6 +267,10 @@ void spi_write16(uint16_t data)
 
 	GPIO_WriteHigh(CS_PORT, CS_PIN);
 }
+
+////////////////////////////////////////////
+// MIDI
+////////////////////////////////////////////
 
 /**
  * @brief Status filter callback to ignore irrelevant MIDI messages
@@ -244,7 +318,7 @@ void handle_midi_msg(midi_msg_t *msg)
 			return;
 		}
 
-		const uint16_t dacval = midi_2_dac[note];
+		const uint16_t dacval = midi2dac[note];
 
 		LOG_DEBUG("Note %d is mapped to DAC value %d", note, dacval);
 
@@ -268,6 +342,10 @@ void handle_midi_msg(midi_msg_t *msg)
 		LOG_DEBUG("Unhandled MIDI message: %02X", status);
 	}
 }
+
+////////////////////////////////////////////
+// SYSEX
+////////////////////////////////////////////
 
 /**
  * @brief SYSEX message callback, handles incoming SYSEX messages
@@ -341,10 +419,40 @@ void handle_sysex_msg(uint8_t *buf, size_t len)
 			LOG_DEBUG("Bad SET GATE message");
 		}
 		break;
+	case SYSEX_WRITE_MIDI_2_DAC_LUT:
+		if (len == 5) {
+			// disableInterrupts();
+
+			LOG_DEBUG("Received WRITE MIDI 2 DAC LUT message");
+
+			uint8_t note = buf[2];
+			uint16_t dacval = buf[3] << 7 | buf[4];
+
+			if (note > MIDI_DATA_MAX_VAL) {
+				LOG_DEBUG("Invalid NOTE value");
+				return;
+			}
+
+			if (dacval > MAX_DAC_VALUE) {
+				LOG_DEBUG("Invalid DAC value");
+				return;
+			}
+
+			midi2dac[note] = dacval;
+			midi2dac_write_eeprom(note, dacval);
+
+			// enableInterrupts();
+		} else {
+			LOG_DEBUG("Bad WRITE MIDI 2 DAC LUT message");
+		}
 	default:
 		break;
 	}
 }
+
+////////////////////////////////////////////
+// Main
+////////////////////////////////////////////
 
 /**
  * @brief Main function
@@ -360,8 +468,9 @@ void main(void)
 	midirx_on_sysex_msg(handle_sysex_msg);
 
 	// Initialize Peripherals
-	setup_gpios();
 	setup_clocks();
+	setup_eeprom();
+	setup_gpios();
 	setup_spi();
 	setup_uart();
 

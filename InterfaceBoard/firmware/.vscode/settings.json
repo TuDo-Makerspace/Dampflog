@@ -9,7 +9,9 @@
         "midirx_sysex_msg.h": "c",
         "midirx_msg.h": "c",
         "midirx.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "stm8s_flash.h": "c",
+        "stm8s_gpio.h": "c"
     },
     "taskExplorer.exclude": [
         "**/.vscode-test/**",

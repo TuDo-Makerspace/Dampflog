@@ -52,7 +52,7 @@
 #endif /* (STM8S208) || (STM8AF52Ax) */
 #include "stm8s_clk.h"
 // #include "stm8s_exti.h"
-// #include "stm8s_flash.h"
+#include "stm8s_flash.h"
 #include "stm8s_gpio.h"
 // #include "stm8s_i2c.h"
 // #include "stm8s_itc.h"

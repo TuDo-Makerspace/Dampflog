@@ -65,11 +65,11 @@ CP         := cp
 
 # Build flags
 BUILD_TARGET_DEVICE   := STM8S103                # Specify the target device here! (See stm8s.h for available devices)
-DEFINES               := -D$(BUILD_TARGET_DEVICE)
+DEFINES               := -D$(BUILD_TARGET_DEVICE) -DSYSEX_ENABLED -DMAX_SYSEX_LEN=10
 
 # Debug
 ifeq ($(DEBUG),1)
-DEFINES			+= -DDEBUG -DSYSEX_ENABLED -DMAX_SYSEX_LEN=10
+DEFINES			+= -DDEBUG
 endif
 
 
@@ -95,7 +95,8 @@ SPL_SRC         := ./lib/STM8S_StdPeriph_Driver/src
 SPL_SRCS        := $(SPL_SRC)/stm8s_clk.c \
                    $(SPL_SRC)/stm8s_gpio.c \
                    $(SPL_SRC)/stm8s_uart1.c \
-		   $(SPL_SRC)/stm8s_spi.c
+		   $(SPL_SRC)/stm8s_spi.c \
+		   $(SPL_SRC)/stm8s_flash.c
 SPL_OBJ         := $(OBJ)/lib/STM8S_StdPeriph_Driver
 SPL_OBJS        := $(patsubst $(SPL_SRC)/%.c,$(SPL_OBJ)/%.$(OBJ_EXT),$(SPL_SRCS))
 SPL_MM          := $(OBJ)/lib/STM8S_StdPeriph_Driver
@@ -167,7 +168,9 @@ DCE_EXCLUDE_SYMBOLS :=	-x _cfg \
 			-x _midirx_on_sysex_msg \
 			-x _LOOPS_PER_MS \
 			-x _setup_uart \
-			-x _midi_2_dac
+			-x _midi_2_dac \
+			-x _FLASH_SetProgrammingTime \
+			-x _FLASH_Lock
 
 DCE_EXCLUDE_ASM := $(FW_ASM)/stm8s_it.asm
 
