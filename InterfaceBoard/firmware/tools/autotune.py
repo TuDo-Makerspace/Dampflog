@@ -30,13 +30,14 @@ SYSEX_CMD_SET_DAC = 0x01
 SYSEX_CMD_SET_GATE = 0x02
 SYSEX_CMD_SET_GATE_CLOSE = 0x00
 SYSEX_CMD_SET_GATE_OPEN = 0x01
+SYSEX_WRITE_MIDI_2_DAC_LUT = 0x03
 
 # Recording
 
-MIDO_WAIT_TIME = 0.06        # seconds
+MIDO_WAIT_TIME = 0.1        # seconds
 # ATTACK_TIME = 0.01          # seconds
 ATTACK_TIME = 0             # MIDO_WAIT_TIME aleardy does the job
-RECORD_DURATION = 0.2       # seconds
+RECORD_DURATION = 0.3       # seconds
 RECORD_SAMPLE_RATE = 44100  # Hz
 RECORD_CHANNELS = 1         # mono
 
@@ -44,7 +45,7 @@ RECORD_CHANNELS = 1         # mono
 
 OSC_MIN_NOTE = 46 # A#2
 OSC_MAX_NOTE = 76 # E5
-OSC_STARTUP_SETTLE_TIME = 2 # seconds
+OSC_STARTUP_SETTLE_TIME = 3 # seconds
 
 #####################################################
 # Step Table
@@ -178,22 +179,20 @@ def uint14_to_midi_data(val):
 def set_dac(port, value):
     if value < 0 or value > MAX_DAC_VAL:
         raise ValueError("DAC value out of range")
-    # msg = bytes(
-    #     [
-    #         SYSEX_START,
-    #         SYSEX_MANUFACTURER_ID,
-    #         SYSEX_CMD_SET_DAC,
-    #         value >> 8,
-    #         value & 0xFF,
-    #         SYSEX_END,
-    #     ]
-    # )
-    # ser.write(msg)
     d = uint14_to_midi_data(value)
     msg = mido.Message("sysex", data=[SYSEX_MANUFACTURER_ID, SYSEX_CMD_SET_DAC, d[0], d[1]])
     port.send(msg)
     time.sleep(MIDO_WAIT_TIME)
-    
+
+######## MIDI to DAC Look-up Table ########
+
+def write_dac(note, value):
+    if value < 0 or value > MAX_DAC_VAL:
+        raise ValueError("DAC value out of range")
+    d = uint14_to_midi_data(value)
+    msg = mido.Message("sysex", data=[SYSEX_MANUFACTURER_ID, SYSEX_WRITE_MIDI_2_DAC_LUT, note, d[0], d[1]])
+    port.send(msg)
+    time.sleep(MIDO_WAIT_TIME)
 
 ######## GATE ########
 
@@ -203,17 +202,6 @@ def set_gate(port, value):
         value = SYSEX_CMD_SET_GATE_OPEN
     else:
         value = SYSEX_CMD_SET_GATE_CLOSE
-
-    # msg = bytes(
-    #     [
-    #         SYSEX_START,
-    #         SYSEX_MANUFACTURER_ID,
-    #         SYSEX_CMD_SET_GATE,
-    #         value,
-    #         SYSEX_END,
-    #     ]
-    # )
-
     msg = mido.Message("sysex", data=[SYSEX_MANUFACTURER_ID, SYSEX_CMD_SET_GATE, value])
     port.send(msg)
 
@@ -298,8 +286,12 @@ parser = argparse.ArgumentParser(
     description="Automatically tunes the Dampflog"
 )
 
+# parser.add_argument(
+#     "-o", "--output", type=str, help="Output for lookup table header", required=True
+# )
+
 parser.add_argument(
-    "-o", "--output", type=str, help="Output for lookup table header", required=True
+    "-m", "--manual", type=int, help="Manually tune a specific MIDI note", required=False
 )
 
 args = parser.parse_args()
@@ -308,39 +300,42 @@ args = parser.parse_args()
 # Intialization
 #####################################################
 
-print("██████   █████  ███    ███ ██████  ███████ ██       ██████   ██████  ")
-print("██   ██ ██   ██ ████  ████ ██   ██ ██      ██      ██    ██ ██       ")
-print("██   ██ ███████ ██ ████ ██ ██████  █████   ██      ██    ██ ██   ███ ")
-print("██   ██ ██   ██ ██  ██  ██ ██      ██      ██      ██    ██ ██    ██ ")
-print("██████  ██   ██ ██      ██ ██      ██      ███████  ██████   ██████  ")
-print("                                                                     ")
-print("                                                                     ")
-print("████████ ██    ██ ███    ██ ███████ ██████                           ")
-print("   ██    ██    ██ ████   ██ ██      ██   ██                          ")
-print("   ██    ██    ██ ██ ██  ██ █████   ██████                           ")
-print("   ██    ██    ██ ██  ██ ██ ██      ██   ██                          ")
-print("   ██     ██████  ██   ████ ███████ ██   ██                          ")
-print("                                                                     ")
-print("                 _-====-__-======-__-========-_____-============-__")
-print("               _(                                                 _)")
-print("            OO(           _/_ _  _  _/_   _/_ _  _  _/_           )_")
-print("           0  (_          (__(_)(_) (__   (__(_)(_) (__            _)")
-print("         o0     (_                                                _)")
-print("        o         '=-___-===-_____-========-___________-===-dwb-='")
-print("      .o                                _________")
-print("     . ______          ______________  |         |      _____")
-print("   _()_||__|| ________ |            |  |_________|   __||___||__")
-print("  (BNSF 1995| |      | |            | __Y______00_| |_         _|")
-print(" /-OO----OO\"=\"OO--OO\"=\"OO--------OO\"=\"OO-------OO\"=\"OO-------OO\"=P")
-print("#####################################################################")
-print("                                                                     ")
-print("Preperation:")
-print("- Ensure the Dampflog is connected to the computer via MIDI")
-print("- Ensure the volume is turned down, but is NOT muted")
-print("- Ensure the audio output of the Dampflog is connected to the computer (ex. via an audio interface)")
-print("- Ensure the Dampflog output is selected as default input device on the computer")
-print("- Please ensure PORTAMENTO has been turned off before tuning")
-print("")
+manual_note = args.manual
+
+if manual_note is None:
+    print("██████   █████  ███    ███ ██████  ███████ ██       ██████   ██████  ")
+    print("██   ██ ██   ██ ████  ████ ██   ██ ██      ██      ██    ██ ██       ")
+    print("██   ██ ███████ ██ ████ ██ ██████  █████   ██      ██    ██ ██   ███ ")
+    print("██   ██ ██   ██ ██  ██  ██ ██      ██      ██      ██    ██ ██    ██ ")
+    print("██████  ██   ██ ██      ██ ██      ██      ███████  ██████   ██████  ")
+    print("                                                                     ")
+    print("                                                                     ")
+    print("████████ ██    ██ ███    ██ ███████ ██████                           ")
+    print("   ██    ██    ██ ████   ██ ██      ██   ██                          ")
+    print("   ██    ██    ██ ██ ██  ██ █████   ██████                           ")
+    print("   ██    ██    ██ ██  ██ ██ ██      ██   ██                          ")
+    print("   ██     ██████  ██   ████ ███████ ██   ██                          ")
+    print("                                                                     ")
+    print("                 _-====-__-======-__-========-_____-============-__")
+    print("               _(                                                 _)")
+    print("            OO(           _/_ _  _  _/_   _/_ _  _  _/_           )_")
+    print("           0  (_          (__(_)(_) (__   (__(_)(_) (__            _)")
+    print("         o0     (_                                                _)")
+    print("        o         '=-___-===-_____-========-___________-===-dwb-='")
+    print("      .o                                _________")
+    print("     . ______          ______________  |         |      _____")
+    print("   _()_||__|| ________ |            |  |_________|   __||___||__")
+    print("  (BNSF 1995| |      | |            | __Y______00_| |_         _|")
+    print(" /-OO----OO\"=\"OO--OO\"=\"OO--------OO\"=\"OO-------OO\"=\"OO-------OO\"=P")
+    print("#####################################################################")
+    print("                                                                     ")
+    print("Preperation:")
+    print("- Ensure the Dampflog is connected to the computer via MIDI")
+    print("- Ensure the volume is turned down, but is NOT muted")
+    print("- Ensure the audio output of the Dampflog is connected to the computer (ex. via an audio interface)")
+    print("- Ensure the Dampflog output is selected as default input device on the computer")
+    print("- Please ensure PORTAMENTO has been turned off before tuning")
+    print("")
 
 # ser = serial.Serial("/dev/ttyUSB0", UART_MIDI_BAUDRATE)
 print("Available MIDI ports:")
@@ -357,112 +352,158 @@ while True:
     print ("Invalid port number")
     print("")
 
+if manual_note is not None:
+    if manual_note < 0 or manual_note > MAX_MIDI_NOTE:
+        print("Invalid MIDI note")
+        exit(1)
+    dac_val = int(input("Enter manual DAC value: "))
+    if dac_val < 0 or dac_val > MAX_DAC_VAL:
+        print("Invalid DAC value")
+        exit(1)
+    write_dac(manual_note, dac_val)
+    print("Assigned DAC value {} to MIDI note {}".format(dac_val, manual_note))
+    exit(0)
+
 print("Press enter to begin the tuning process: ")
 input()
 
-midi_2_dac = {}
-
-# Open/Enable GATE
-set_gate(port, True)
-print("GATE opened")
-
-print("Waiting for oscillator to settle...")
-time.sleep(OSC_STARTUP_SETTLE_TIME)
-
-print("Beginning tuning process...")
-# Set DAC to 0 and give it a second to settle
-freq = msr_after_dac_chng(port, 0, 1, RECORD_DURATION)
-
 #####################################################
-# Determine first note
+# Tuning process
 #####################################################
 
-# Determining the first note is treated as a special case because
-# the DAC must first enter the transistors operating region, meaning
-# the first few hundred DAC values are guaranteed to be useless.
-# Additionally, the CV to frequency response around the first note (A#2)
-# is very low, meaning we don't have to be very precise to tune the first note.
+while True:
+    midi_2_dac = {}
 
-dac_val = 0
+    # Open/Enable GATE
+    set_gate(port, True)
+    print("GATE opened")
 
-# Sometimes the min. Note is already slightly greater than A#2
-if freq >= midi_note_to_freq(OSC_MIN_NOTE):
-    midi_2_dac[OSC_MIN_NOTE] = 0
-    print(
-        "MIDI note: {}   \tDAC value: {} \t\tError (cents): {}".format(
-            midi_note_to_name_oct(OSC_MIN_NOTE), dac_val, error_in_cents(midi_note_to_freq(OSC_MIN_NOTE), freq)
+    print("Waiting for oscillator to settle...")
+    time.sleep(OSC_STARTUP_SETTLE_TIME)
+
+    print("Beginning tuning process...")
+    # Set DAC to 0 and give it a second to settle
+    freq = msr_after_dac_chng(port, 0, 1, RECORD_DURATION)
+
+    #####################################################
+    # Determine first note
+    #####################################################
+
+    # Determining the first note is treated as a special case because
+    # the DAC must first enter the transistors operating region, meaning
+    # the first few hundred DAC values are guaranteed to be useless.
+    # Additionally, the CV to frequency response around the first note (A#2)
+    # is very low, meaning we don't have to be very precise to tune the first note.
+
+    dac_val = 0
+
+    # Sometimes the min. Note is already slightly greater than A#2
+    if freq >= midi_note_to_freq(OSC_MIN_NOTE):
+        midi_2_dac[OSC_MIN_NOTE] = 0
+        print(
+            "MIDI note: {} ({})   \tDAC value: {} \t\tError (cents): {}".format(
+                midi_note_to_name_oct(OSC_MIN_NOTE), OSC_MIN_NOTE, dac_val, error_in_cents(midi_note_to_freq(OSC_MIN_NOTE), freq)
+            )
         )
-    )
-    dac_val = STEP_TABLE[0] # Pretend first note succeeded as second note is not as flaky
-else:
-    dac_val, error = coarse_fine_tune(
-        port, dac_val, STEP_TABLE[0], 10, midi_note_to_freq(OSC_MIN_NOTE)
-    )
-
-    midi_2_dac[OSC_MIN_NOTE] = dac_val
-
-    print(
-        "MIDI note: {}   \tDAC value: {} \tError (cents): {}".format(
-            midi_note_to_name_oct(OSC_MIN_NOTE), dac_val, error
+        dac_val = STEP_TABLE[0] # Pretend first note succeeded as second note is not as flaky
+    else:
+        dac_val, error = coarse_fine_tune(
+            port, dac_val, STEP_TABLE[0], 10, midi_note_to_freq(OSC_MIN_NOTE)
         )
-    )
+
+        midi_2_dac[OSC_MIN_NOTE] = dac_val
+
+        print(
+            "MIDI note: {} ({})\tDAC value: {} \tError (cents): {}".format(
+                midi_note_to_name_oct(OSC_MIN_NOTE), OSC_MIN_NOTE, dac_val, error
+            )
+        )
+
+    #####################################################
+    # Determine remaining notes
+    #####################################################
+
+    second_note = OSC_MIN_NOTE + 1
+    fine_step = 1
+
+    for i in range(second_note, OSC_MAX_NOTE + 1):
+        dac_val, error = coarse_fine_tune(
+            port, dac_val, STEP_TABLE[i - OSC_MIN_NOTE], fine_step, midi_note_to_freq(i)
+        )
+
+        midi_2_dac[i] = dac_val
+
+        print(
+            "MIDI note: {} ({})   \tDAC value: {} \tError (cents): {}".format(
+                midi_note_to_name_oct(i), i, dac_val, error
+            )
+        )
+
+    set_gate(port, False)
+    print("GATE closed")
+
+    brk = True
+
+    while True:
+        answer = input("Do you wish to tune the device again? (y/N): ")
+        if answer.lower() == "y":
+            brk = False
+            break
+        elif answer.lower() == "n" or answer == "":
+            break
+        else:
+            print("Invalid input")
+
+    if brk:
+        break
 
 #####################################################
-# Determine remaining notes
+# Write results into MIDI to DAC look-up table
 #####################################################
-
-second_note = OSC_MIN_NOTE + 1
-fine_step = 1
-
-for i in range(second_note, OSC_MAX_NOTE + 1):
-    dac_val, error = coarse_fine_tune(
-        port, dac_val, STEP_TABLE[i - OSC_MIN_NOTE], fine_step, midi_note_to_freq(i)
-    )
-
-    midi_2_dac[i] = dac_val
-
-    print(
-        "MIDI note: {}   \tDAC value: {} \tError (cents): {}".format(
-            midi_note_to_name_oct(i), dac_val, error
-        )
-    )
-
-set_gate(port, False)
-print("GATE closed")
+print("Writing results into MIDI to DAC look-up table...")
+for i in range(0, MAX_MIDI_NOTE + 1):
+    if i < OSC_MIN_NOTE:
+        write_dac(i, 0)
+    elif i > OSC_MAX_NOTE:
+        write_dac(i, MAX_DAC_VAL)
+    else:
+        write_dac(i, midi_2_dac[i])
 
 port.close()
+
+print("Tuning complete!")
 
 #####################################################
 # Generate C header file
 #####################################################
 
-with open(args.output, "w") as f:
-    guard = "MIDI_2_DAC_INCLUDED"
-    f.write("#ifndef " + guard + "\n")
-    f.write("#define " + guard + "\n")
-    f.write("// This file is autogenerated by tune.py\n")
-    f.write("// MIDI to DAC lookup table\n")
-    f.write("#include <stdint.h>\n")
-    f.write("#include <midirx_msg.h>\n")
-    f.write("const uint16_t midi_2_dac[MIDI_DATA_MAX_VAL + 1] = {")
-    f.write("\n")
+# with open(args.output, "w") as f:
+#     guard = "MIDI_2_DAC_INCLUDED"
+#     f.write("#ifndef " + guard + "\n")
+#     f.write("#define " + guard + "\n")
+#     f.write("// This file is autogenerated by tune.py\n")
+#     f.write("// MIDI to DAC lookup table\n")
+#     f.write("#include <stdint.h>\n")
+#     f.write("#include <midirx_msg.h>\n")
+#     f.write("const uint16_t midi_2_dac[MIDI_DATA_MAX_VAL + 1] = {")
+#     f.write("\n")
 
-    for i in range(128):
-        if i < OSC_MIN_NOTE:
-            f.write("0")
-        elif i > OSC_MAX_NOTE:
-            f.write(str(MAX_DAC_VAL))
-        else:
-            f.write(str(midi_2_dac[i]))
+#     for i in range(128):
+#         if i < OSC_MIN_NOTE:
+#             f.write("0")
+#         elif i > OSC_MAX_NOTE:
+#             f.write(str(MAX_DAC_VAL))
+#         else:
+#             f.write(str(midi_2_dac[i]))
         
-        if i < 127:
-            f.write(", ")
+#         if i < 127:
+#             f.write(", ")
         
-        f.write("\t// " + midi_note_to_name_oct(i))
-        f.write("\n")
+#         f.write("\t// " + midi_note_to_name_oct(i))
+#         f.write("\n")
 
-    f.write("};\n")
-    f.write("#endif\n")
+#     f.write("};\n")
+#     f.write("#endif\n")
 
-print("Generated C header file: " + args.output)
-print("Tuning complete!")
+# print("Generated C header file: " + args.output)
+# print("Tuning complete!")
