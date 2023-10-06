@@ -75,9 +75,11 @@
 #define SYSEX_MANUFACTURER_ID 0x7D // Manufacturer ID for private use
 
 #define SYSEX_SET_DAC 0x01
+
 #define SYSEX_SET_GATE 0x02
 #define SYSEX_SET_GATE_CLOSE_VAL 0x00
 #define SYSEX_SET_GATE_OPEN_VAL 0x01
+
 #define SYSEX_WRITE_MIDI_2_DAC_LUT 0x03
 
 ////////////////////////////////////////////
@@ -462,16 +464,18 @@ void handle_sysex_msg(uint8_t *buf, size_t len)
  */
 void main(void)
 {
-	// Initialize Callbacks
+	// Initialization
+	setup_clocks();
+
+	setup_eeprom();
+	midi2dac_from_eeprom();
+	
+	setup_gpios();
+	setup_spi();
+
 	midirx_set_status_filter(status_filter);
 	midirx_on_midi_msg(handle_midi_msg);
 	midirx_on_sysex_msg(handle_sysex_msg);
-
-	// Initialize Peripherals
-	setup_clocks();
-	setup_eeprom();
-	setup_gpios();
-	setup_spi();
 	setup_uart();
 
 	LOG("Dampflog Interface Board")

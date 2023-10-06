@@ -170,7 +170,8 @@ DCE_EXCLUDE_SYMBOLS :=	-x _cfg \
 			-x _setup_uart \
 			-x _midi_2_dac \
 			-x _FLASH_SetProgrammingTime \
-			-x _FLASH_Lock
+			-x _FLASH_Lock \
+			-x _setup_clocks
 
 DCE_EXCLUDE_ASM := $(FW_ASM)/stm8s_it.asm
 
