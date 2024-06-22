@@ -1,6 +1,6 @@
 # Dampflog <!-- omit in toc -->
 
-![Showcase]()
+![Showcase](docs/Showcase.JPG)
 
 A synthesizer built from an [old Conrad Train whistle PCB](docs/DLP_Manual.pdf)
 
@@ -258,6 +258,8 @@ I actually went so far as to construct a 1V/Oct scaling circuit to connect my Ke
 At this point, it dawned on me that trying to tackle the inverse-multiplicative quirk with analog wizardry just wasn't worth the headache. I should probably mention that I'm currently pursuing a degree in computer engineering. Now, you know how it is – us computer engineers often enjoy poking fun at electrical engineers by solving problems with lines of code instead of soldering irons. Jokes aside, it really seemed like the easiest and most practical solution here was to go digital, and more specifically, to embrace the wonders of microcontrollers and DACs. And if we're making the switch to digital, why not go all the way and swap out CV with MIDI?
 
 The idea is pretty straightforward: the MCU receives MIDI signals via a MIDI port, then converts them into DAC values using a handy lookup table. These DAC values, in turn, dictate the behavior of a transistor nestled within the oscillator's feedback path. Now, we no longer need to fuss about the intricacies of whether the oscillator operates linearly or exponentially. All we have to do is tell the MCU which note corresponds to which DAC value, and presto – we've got the right frequency.
+
+![MIDI Ports](docs/Midi.JPG)
 
 With a DAC, it's still important to maintain control over the transistor's gain suppression while ensuring that the gain remains substantial enough to cover the oscillator's full frequency range with the MCU's and DAC's supply voltage. For the DAC, I opted for an MCP4921, which has 12 bits of resolution and the convenience of an external reference voltage. This choice proved more than adequate for accurately mapping MIDI data to the oscillator's frequency range, and that despite loosing a portion of the DAC range due to the absence of biasing its output to the operating range of the transistor.
 
